@@ -29,12 +29,13 @@ namespace BossAuras.Core.Models.Auras;
 
 public class Kinship : BossAuraModel
 {
-    private const string COMBATS = "combats";
+    private const string COMBATS = "Combats";
+    private const string HP_PERCENTAGE = "HpPercentage";
     
     public override List<EncounterModel> Bosses => [ModelDb.Encounter<TheKinBoss>()];
     
     
-    protected override IEnumerable<DynamicVar> CanonicalVars => [new(COMBATS, 7)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new(COMBATS, 7), new (HP_PERCENTAGE, 20)];
     // TODO: Create new "Encounter Hover Tip" to display the "Kin Follower" enemy as a HoverTip for the aura!?
     protected override IEnumerable<IHoverTip> ExtraHoverTips => [];
 
@@ -136,7 +137,7 @@ public class Kinship : BossAuraModel
     //     // add enemy
     //     var target = await CreatureCmd.Add<KinFollower>(combatState);
     //     await PowerCmd.Apply<MinionPower>(new ThrowingPlayerChoiceContext(), target, 1m, null, null);
-    //     target.SetCurrentHpInternal(target.MaxHp * 0.2m);
+    //     target.SetCurrentHpInternal(target.MaxHp * 0.2m); // replace fix .2 with DynamicVar
     //     // placement
     //     if (combatState.Encounter!.HasScene)
     //     {
