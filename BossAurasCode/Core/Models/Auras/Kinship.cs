@@ -17,6 +17,8 @@ using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 using BossAuras;
 using BossAuras.Core.Helper;
+using BossAuras.Core.HoverTips;
+using BossAuras.Core.Models.Cards;
 using BossAuras.Core.Saves;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
@@ -37,7 +39,7 @@ public class Kinship : BossAuraModel
     
     protected override IEnumerable<DynamicVar> CanonicalVars => [new(COMBATS, 7), new (HP_PERCENTAGE, 20)];
     // TODO: Create new "Encounter Hover Tip" to display the "Kin Follower" enemy as a HoverTip for the aura!?
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => [];
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => [MonsterHoverTipFactory.Create<KinFollower>()];
 
     [SavedProperty]
     private int[] KinshipCoordCols { get; set; } = [];

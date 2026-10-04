@@ -1,10 +1,14 @@
 ﻿using BaseLib.Abstracts;
 using BaseLib.Utils;
+using BossAuras.Core.HoverTips;
+using BossAuras.Core.Nodes.HoverTips;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models.CardPools;
+using MegaCrit.Sts2.Core.Models.Monsters;
 using MegaCrit.Sts2.Core.ValueProps;
 
 namespace BossAuras.Core.Models.Cards;
@@ -23,4 +27,6 @@ public class MinorBeckon() : CustomCardModel(1, CardType.Status, CardRarity.Stat
         await CreatureCmd.Damage(choiceContext, Owner.Creature, DynamicVars.HpLoss.BaseValue, DamageProps.cardHpLoss, this, null);
     }
 
+    protected override IEnumerable<IHoverTip> ExtraHoverTips =>[MonsterHoverTipFactory.Create<KinFollower>(),
+                HoverTipFactory.FromCard<MinorBeckon>(), HoverTipFactory.Static(StaticHoverTip.Block)];
 }

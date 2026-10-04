@@ -1,0 +1,75 @@
+[gd_scene load_steps=5 format=3 uid="uid://w5se44pws0vg"]
+
+[ext_resource type="Texture2D" uid="uid://d3vmiycr36blt" path="res://images/ui/hover_tip.png" id="1_6j5xw"]
+[ext_resource type="Script" uid="uid://bjlwwm302hvtj" path="res://BossAurasCode/Core/Nodes/HoverTips/NMonsterHoverTip.cs" id="1_ucgkc"]
+[ext_resource type="FontVariation" uid="uid://bg85h22rkxs6g" path="res://themes/kreon_bold_shared.tres" id="2_ucgkc"]
+[ext_resource type="Script" uid="uid://dtfio45agppyj" path="res://addons/mega_text/MegaLabel.cs" id="3_stg8i"]
+
+[node name="MonsterHoverTip" type="MarginContainer"]
+offset_right = 360.0
+offset_bottom = 0
+mouse_filter = 2
+script = ExtResource("1_ucgkc")
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
+
+[node name="Shadow" type="NinePatchRect" parent="."]
+modulate = Color(0, 0, 0, 0.25098)
+layout_mode = 2
+texture = ExtResource("1_6j5xw")
+region_rect = Rect2(-8, -8, 339, 107)
+patch_margin_left = 55
+patch_margin_top = 43
+patch_margin_right = 91
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Bg" type="NinePatchRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("1_6j5xw")
+region_rect = Rect2(0, 0, 339, 107)
+patch_margin_left = 55
+patch_margin_top = 43
+patch_margin_right = 91
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="TipContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 45
+theme_override_constants/margin_bottom = 28
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TipContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="TipContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937255, 0.784314, 0.317647, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_ucgkc")
+theme_override_font_sizes/font_size = 22
+text = "Creature Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("3_stg8i")
+AutoSizeEnabled = false
+MinFontSize = 8
+MaxFontSize = 100
+metadata/_custom_type_script = "uid://dtfio45agppyj"
+
+[node name="MonsterContainer" type="Control" parent="TipContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(293, 293)
+layout_mode = 2
