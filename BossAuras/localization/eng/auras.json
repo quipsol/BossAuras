@@ -1,0 +1,13 @@
+{
+  "BOSSAURAS-EMPTY_AURA.title": "Test Title",
+  "BOSSAURAS-EMPTY_AURA.description": "Test Description",
+  "BOSSAURAS-KINSHIP.title": "Kinship",
+  "BOSSAURAS-KINSHIP.description": "In some combats, injured [gold]Kin Follower[/gold] will appear.",
+  "BOSSAURAS-VANTOM.title" : "Vantom",
+  "BOSSAURAS-VANTOM.description" : "At the beginning of combat, every creature gains [blue]1[/blue] [gold]Slippery[/gold].",
+
+  "BOSSAURAS-LAGAVULIN_MATRIARCH.title" : "Lagavulin Matriarch",
+  "BOSSAURAS-LAGAVULIN_MATRIARCH.description" : "At the beginning of turn [blue]5[/blue] every creature loses [blue]1[/blue] [gold]Strength[/gold] and [gold]Dexterity[/gold].",
+  "BOSSAURAS-SOUL_FYSH.title" : "Soul Fysh",
+  "BOSSAURAS-SOUL_FYSH.description" : "Begin each combat with [blue]1[/blue] [gold]Minor Beckon[/gold] in your discard pile."
+}

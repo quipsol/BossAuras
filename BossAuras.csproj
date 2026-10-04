@@ -1,0 +1,64 @@
+﻿<Project Sdk="Godot.NET.Sdk/4.5.1" InitialTargets="CheckDependencyPaths">
+    <Import Project=".\Sts2PathDiscovery.props"/>
+    <Import Project="build/mod.build.props" />
+    <Import Project="build/mod.build.targets" />
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <EnablePreviewFeatures>true</EnablePreviewFeatures>
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+        <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+        <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+        <ImplicitUsings>true</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
+        <PathMap>$(AppOutputBase)=.\</PathMap>
+        <GodotDisabledSourceGenerators>GodotPluginsInitializer</GodotDisabledSourceGenerators>
+        <!-- Architecture mismatch warning -->
+        <NoWarn>$(NoWarn);MSB3270</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="project.godot"/>
+        <AdditionalFiles Include="BossAuras/localization/**/*.json"/> <!-- Used by analyzer -->
+
+        <EmbeddedResource Remove="BossAuras/**"/>
+        <Compile Remove="addons\**"/>
+        <Compile Remove="src\**"/>
+        <Compile Remove="BossAuras/**"/>
+        <Compile Include="BossAurasCode/**/*.cs"/>
+
+        <!-- If TOOLS is not defined we want to exclude the "editor" folder from being shipped -->
+        <Compile Condition="$(DefineConstants.Contains('TOOLS')) == 'true'" Include="editor\**\*.cs" />
+        <Compile Condition="$(DefineConstants.Contains('TOOLS')) == 'false'" Remove="editor\**\*.cs" />
+
+        <None Include="BossAuras/**"/>
+        <None Include="BossAurasCode/**"/> <!--Exclude="BossAurasCode/**/*.cs"-->
+        <None Include="build/**"/>
+        <None Include="editor/**"/>
+        <None Include="BossAuras.json"/>
+        <None Include="local.props"/>
+        <None Include=".gitignore"/>
+
+        <None Remove=".examples/**"/>
+
+        <PackageReference Update="Alchyr.Sts2.ModAnalyzers" Version="0.1.9" />
+        <!--<GodotResourceFiles Include="BossAuras/**"/>-->
+    </ItemGroup>
+
+
+
+    <!--    The Sentry addon auto-injects this import; We need the dll in the debug folder but this package takes priority and prohibits it.
+            Option 1: Leave the auto import and manually add Sentry.dll to the folder (Can be found in the games installation directory)
+            Option 2: Immediately remove the Package again, so the reference settings in mod.build.props take over-->
+    <Import Project="addons/sentry/dotnet/Sentry.Godot.props" Condition="Exists('addons/sentry/dotnet/Sentry.Godot.props')" />
+    <ItemGroup>
+        <PackageReference Remove="Sentry"/>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="BossAurasCode\Core\Models\Powers\" />
+      <Folder Include="BossAurasCode\Telemetry\" />
+    </ItemGroup>
+</Project>
