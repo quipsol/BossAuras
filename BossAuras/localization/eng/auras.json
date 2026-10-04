@@ -9,5 +9,5 @@
   "BOSSAURAS-LAGAVULIN_MATRIARCH.title" : "Lagavulin Matriarch",
   "BOSSAURAS-LAGAVULIN_MATRIARCH.description" : "At the beginning of turn [blue]5[/blue] every creature loses [blue]1[/blue] [gold]Strength[/gold] and [gold]Dexterity[/gold].",
   "BOSSAURAS-SOUL_FYSH.title" : "Soul Fysh",
-  "BOSSAURAS-SOUL_FYSH.description" : "Begin each combat with [blue]1[/blue] [gold]Minor Beckon[/gold] in your discard pile."
+  "BOSSAURAS-SOUL_FYSH.description" : "Begin each combat with [blue]{Cards}[/blue] [gold]Minor Beckon[/gold] in your discard pile."
 }

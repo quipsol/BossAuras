@@ -1,4 +1,4 @@
-﻿namespace BossAuras.Core.Models.BossAuras;
+﻿namespace BossAuras.Core.Models.Auras;
 
 public class DeprecatedAura : AuraModel
 {

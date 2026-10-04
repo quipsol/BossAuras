@@ -4,6 +4,7 @@ using BossAuras.Core.Helper;
 using MegaCrit.Sts2.Core.Modding;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Runs;
+using MegaCrit.Sts2.Core.Saves;
 
 namespace BossAuras.Core.Models.Singletons;
 
@@ -48,9 +49,6 @@ public class BossAuraSingleton : SingletonModel
                     var mutable1 = relation.Value[0].ToMutable();
                     (mutable1 as IBossAura)!.Boss = relation.Key;
                     await AuraCmd.Add(mutable1);
-                    await AuraCmd.Add(mutable1);
-                    await AuraCmd.Add(mutable1);
-                    await AuraCmd.Add(mutable1);
                     continue;
                 default:
                     var mutable2 = rng.NextItem(relation.Value)!.ToMutable();
@@ -59,6 +57,11 @@ public class BossAuraSingleton : SingletonModel
                     continue;
             }
         }
+        // The game does not save the run after "AfterActEntered" is called.
+        // However, if the player reloads the save at this point, the game does not call "AfterActEntered" again.
+        // This leads to all Boss-Auras being permanently lost for the act.
+        if(runState.CurrentActIndex is 0)
+            await SaveManager.Instance.SaveRun(null, saveProgress: false);
     }
     
     

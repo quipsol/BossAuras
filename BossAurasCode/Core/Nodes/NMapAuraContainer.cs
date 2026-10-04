@@ -52,10 +52,12 @@ public partial class NMapAuraContainer : Control
         return nMapBossAuras;
     }
 
+    [Export] public float MaxAuraListHeight = 400f;
     
     private CanvasItem _background = null!;
     private MegaLabel _title = null!;
     private VBoxContainer _aurasContainer = null!;
+    private ScrollContainer _auraScroll = null!;
     private readonly List<NMapAura> _nMapAuras = []; // not sure if we need it
     
     public override void _Ready()
@@ -63,12 +65,24 @@ public partial class NMapAuraContainer : Control
         Entry.Logger.Info("NMapAuras._Ready()");
         _background = GetNode<CanvasItem>("%Bg");
         _title = GetNode<MegaLabel>("%Title");
+        _auraScroll = GetNode<ScrollContainer>("%AuraScroll");
         _aurasContainer = GetNode<VBoxContainer>("%Auras");
-        
+        _aurasContainer.MinimumSizeChanged += UpdateScrollHeight;
         Reload();
     }
-    
 
+    public override void _ExitTree()
+    {
+        _aurasContainer.MinimumSizeChanged -= UpdateScrollHeight;
+    }
+
+    private void UpdateScrollHeight()
+    {
+        var contentHeight = _aurasContainer.GetCombinedMinimumSize().Y;
+        _auraScroll.CustomMinimumSize = new Vector2(0, Mathf.Min(contentHeight, MaxAuraListHeight));
+        Callable.From(ResetSize).CallDeferred();
+    }
+    
     /// <summary>
     /// Clears and rebuilds the entire container. This is not meant to be called when individual auras are added or removed!
     /// </summary>
@@ -80,25 +94,24 @@ public partial class NMapAuraContainer : Control
             child.QueueFreeSafely();
         
         foreach (var auraModel in GameHelper.GetRunState().Auras)
-            AddAuraInternal(auraModel, false);
+            AddAuraInternal(auraModel);
         Entry.Logger.Info($"Done Reloading NMapAuraContainer. Total of {_nMapAuras.Count} Auras!");
-        Visible = _nMapAuras.Count != 0;
-        Callable.From(ResetSize).CallDeferred();
+        UpdateVisibility();
     }
 
     public void AddAura(AuraModel aura)
     {
         AddAuraInternal(aura);
+        UpdateVisibility();
     }
 
-    private void AddAuraInternal(AuraModel aura, bool resetSize = true)
+    private void AddAuraInternal(AuraModel aura)
     {
         Entry.Logger.Info($"Aura: {aura.Id.Entry}");
         var roomIconPath = ImageHelper.GetRoomIconPath(MapPointType.Boss, RoomType.Boss, ModelDb.GetId<CeremonialBeastBoss>());
         var nMapAura = NMapAura.Create(aura.Title, aura.DynamicDescription, roomIconPath!, aura);
         _nMapAuras.Add(nMapAura);
         _aurasContainer.AddChildSafely(nMapAura);
-        if(resetSize) Callable.From(ResetSize).CallDeferred();
     }
 
     public void RemoveAura(AuraModel aura)
@@ -107,11 +120,15 @@ public partial class NMapAuraContainer : Control
         if (nMapAura is null) return;
         _nMapAuras.Remove(nMapAura);
         nMapAura.QueueFreeSafely(); 
-        Callable.From(ResetSize).CallDeferred();
+        //Callable.From(ResetSize).CallDeferred();
     }
+    
+    private void UpdateVisibility() => Visible = _nMapAuras.Count != 0;
     
     // TODO: Create a playable card that Purges and creates a new Aura, as a test on how to handle auras appearing at any point (and handle duplicates)
     // TODO: Also add new console command "aura AURA_ID"
+    
+    
     
     #region Patches
     

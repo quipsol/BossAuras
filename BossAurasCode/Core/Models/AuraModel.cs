@@ -1,9 +1,12 @@
-﻿using BossAuras.Constants;
-using BossAuras.Core.Models.BossAuras;
+﻿using System.Runtime.InteropServices;
+using System.Text;
+using BossAuras.Constants;
+using BossAuras.Core.Models.Auras;
 using BossAuras.Core.Saves;
 using BossAuras.Core.Saves.Runs;
 using Godot;
 using MegaCrit.Sts2.Core.Helpers;
+using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
@@ -92,6 +95,28 @@ public abstract class AuraModel : AbstractModel
     
     public DynamicVarSet DynamicVars => _dynamicVars ??= InitDynamicVars(CanonicalVars, this);
 
+    private static DynamicVarSet InitDynamicVars(IEnumerable<DynamicVar> canonicalVars, AuraModel model)
+    {
+        var dynamicVarSet = new DynamicVarSet(canonicalVars);
+        dynamicVarSet.InitializeWithOwner(model);
+        return dynamicVarSet;
+    }
+    
+    protected virtual IEnumerable<DynamicVar> CanonicalVars => [];
+    
+    protected virtual IEnumerable<IHoverTip> ExtraHoverTips => [];
+    
+    public IEnumerable<IHoverTip> HoverTips
+    {
+        get
+        {
+            var list = new List<IHoverTip>();
+            list.AddRange(ExtraHoverTips);
+            return list;
+        }
+    }
+    
+    
     public AuraModel CanonicalInstance
     {
         get => IsMutable ? field : this;
@@ -101,15 +126,7 @@ public abstract class AuraModel : AbstractModel
             field = value;
         }
     } = null!; // Game Models also only set this in AfterCloned.
-
-    private static DynamicVarSet InitDynamicVars(IEnumerable<DynamicVar> canonicalVars, AuraModel model)
-    {
-        var dynamicVarSet = new DynamicVarSet(canonicalVars);
-        dynamicVarSet.InitializeWithOwner(model);
-        return dynamicVarSet;
-    }
     
-    protected virtual IEnumerable<DynamicVar> CanonicalVars => [];
     
     public override bool ShouldReceiveCombatHooks => true;
     

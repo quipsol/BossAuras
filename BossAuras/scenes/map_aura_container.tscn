@@ -8,6 +8,8 @@
 [node name="MapAuraContainer" type="MarginContainer"]
 offset_right = 200.0
 offset_bottom = 150.0
+mouse_filter = 0
+mouse_force_pass_scroll_events = false
 theme_override_constants/margin_right = -8
 theme_override_constants/margin_bottom = -8
 script = ExtResource("1_h56ob")
@@ -67,8 +69,14 @@ AutoSizeEnabled = false
 MinFontSize = 8
 MaxFontSize = 100
 
-[node name="Auras" type="VBoxContainer" parent="TextContainer/VBoxContainer"]
+[node name="AuraScroll" type="ScrollContainer" parent="TextContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Auras" type="VBoxContainer" parent="TextContainer/VBoxContainer/AuraScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 theme_override_constants/separation = 0

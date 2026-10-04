@@ -18,29 +18,30 @@ using MegaCrit.Sts2.Core.Runs;
 using BossAuras;
 using BossAuras.Core.Helper;
 using BossAuras.Core.Saves;
+using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Saves.Runs;
 
-namespace BossAuras.Core.Models.BossAuras;
+namespace BossAuras.Core.Models.Auras;
 
-public class Kinship : AuraModel, IBossAura
+public class Kinship : BossAuraModel
 {
     private const string COMBATS = "combats";
     
-    public List<EncounterModel> Bosses => [ModelDb.Encounter<TheKinBoss>()];
-    public BossAuraEnd AuraEnd => BossAuraEnd.EndOfAct;
-    public EncounterModel Boss { get; set; } = null!;
+    public override List<EncounterModel> Bosses => [ModelDb.Encounter<TheKinBoss>()];
     
     
     protected override IEnumerable<DynamicVar> CanonicalVars => [new(COMBATS, 7)];
+    // TODO: Create new "Encounter Hover Tip" to display the "Kin Follower" enemy as a HoverTip for the aura!?
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => [];
 
     [SavedProperty]
-    private int[] KinshipCoordCols { get; set; } = Array.Empty<int>();
+    private int[] KinshipCoordCols { get; set; } = [];
     [SavedProperty]
-    private int[] KinshipCoordRows { get; set; } = Array.Empty<int>();
+    private int[] KinshipCoordRows { get; set; } = [];
     [SavedProperty]
     private bool KinshipCoordsSet { get; set; }
 

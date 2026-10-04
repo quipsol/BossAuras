@@ -2,7 +2,10 @@
 using Godot;
 using MegaCrit.Sts2.addons.mega_text;
 using MegaCrit.Sts2.Core.Assets;
+using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
+using MegaCrit.Sts2.Core.Nodes.HoverTips;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
 
 namespace BossAuras.Core.Nodes;
 
@@ -52,6 +55,10 @@ public partial class NMapAura : Control
         _auraTexture = GetNode<TextureRect>("%AuraIcon");
         _smallAuraTexture = GetNode<TextureRect>("%SmallAuraIcon");
         _description.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+        Connect(Control.SignalName.FocusEntered, Callable.From(OnFocus));
+        Connect(Control.SignalName.FocusExited, Callable.From(OnUnfocus));
+        Connect(Control.SignalName.MouseEntered, Callable.From(OnFocus));
+        Connect(Control.SignalName.MouseExited, Callable.From(OnUnfocus));
         Reload();
     }
 
@@ -62,4 +69,23 @@ public partial class NMapAura : Control
         _auraTexture.Texture = AuraIcon;
         _smallAuraTexture.Texture = SmallAuraIcon;
     }
+
+    private void OnFocus()
+    {
+        ShowHoverTips(Model.HoverTips);
+    }
+
+    private void OnUnfocus()
+    {
+        HideHoverTips();
+    }
+    
+    public void ShowHoverTips(IEnumerable<IHoverTip> hoverTips)
+    {
+        HideHoverTips();
+        NHoverTipSet.CreateAndShow(this, hoverTips, HoverTip.GetHoverTipAlignment(this, 0.5f));
+    }
+    
+    private void HideHoverTips() => NHoverTipSet.Remove(this);
+    
 }
