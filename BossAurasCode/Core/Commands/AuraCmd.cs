@@ -21,10 +21,10 @@ public static class AuraCmd
         await aura.AfterApplied();
     }
 
-    public static void Remove(AuraModel aura)
+    public static async Task Remove(AuraModel aura)
     {
         if (!Auras.Contains(aura)) return;
-        aura.BeforeRemoval();
+        await aura.BeforeRemoval();
         Auras.Remove(aura);
     }
 }

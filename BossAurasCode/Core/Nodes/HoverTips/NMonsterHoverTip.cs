@@ -1,9 +1,12 @@
 ﻿using Godot;
 using MegaCrit.Sts2.addons.mega_text;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Combat;
+using MegaCrit.Sts2.Core.Random;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace BossAuras.Core.Nodes.HoverTips;
 
@@ -25,13 +28,54 @@ public partial class NMonsterHoverTip: MarginContainer
 
     public void SetDisplayMonster(MonsterModel monster)
     {
+        if (!monster.IsMutable) monster = monster.ToMutable();
         Entry.Logger.Info("Entering NHoverTipMonsterContainer.SetDisplayCreature()");
         _title.Text = monster.Title.GetFormattedText(); 
         _monsterContainer.FreeChildren();
+        //FlatMonsterVisuals(monster);
+        AnimatedMonsterVisuals(monster);
+    }
+
+
+    private void FlatMonsterVisuals(MonsterModel monster)
+    {
         var nCreature = monster.CreateVisuals();
         _monsterContainer.AddChildSafely(nCreature);
+        nCreature.SpineBody?.GetAnimationState().SetAnimation("idle_loop", loop: true);
         FitToContainer(nCreature);
+    }
 
+    private void AnimatedMonsterVisuals(MonsterModel monster)
+    {
+        monster.Rng = Rng.Chaotic;
+        monster.RunRng = new RunRngSet(Rng.Chaotic);
+        monster.SetUpForCombat();
+        var entity = new Creature(monster, CombatSide.Enemy, null)
+        {
+                    CombatState = NullCombatState.Instance
+        };
+        var creature = NCreature.Create(entity);
+        if (creature is null) return;
+        _monsterContainer.AddChildSafely(creature);
+        creature.SetupForBestiary();
+        FitToContainer(creature);
+    }
+
+    private void FitToContainer(NCreature creature)
+    {
+        var area = _monsterContainer.CustomMinimumSize;
+        var bounds = creature.Visuals.Bounds;
+        var toVisuals = creature.GetGlobalTransform().AffineInverse() * bounds.GetGlobalTransform();
+        var rect = new Rect2(toVisuals.Origin, bounds.Size * toVisuals.Scale);
+
+        if (rect.Size.X <= 0f || rect.Size.Y <= 0f)
+        {
+            creature.Position = area / 2f;
+            return;
+        }
+        var scale = Mathf.Min(area.X / rect.Size.X, area.Y / rect.Size.Y) * FIT_PADDING;
+        creature.Scale = Vector2.One * scale;
+        creature.Position = area / 2f - rect.GetCenter() * scale;
     }
     
     private void FitToContainer(NCreatureVisuals visuals)

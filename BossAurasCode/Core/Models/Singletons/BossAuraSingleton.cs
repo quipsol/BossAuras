@@ -3,16 +3,16 @@ using BossAuras.Core.Extensions;
 using BossAuras.Core.Helper;
 using MegaCrit.Sts2.Core.Modding;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
 
 namespace BossAuras.Core.Models.Singletons;
 
-// TODO:
-// Reloading the run at neow does not call AfterActEntered again.
-// However the run does not get saved yet, only after choosing a neow option.
-// So by starting the run, and leaving-reentering, the auras are gone.
-// Might also happen at the other Acts.
+// potential race condition with auras using these hooks!
+// This is a quick and dirty solution. If we ever create Auras that need these hooks,
+// it will be better to write some dedicated patches that handle removal (and adding) at appropriate times outside of the hook ecosystem.
+// e.g. Adding could happen with a transpiler right before "RunState.EnterAct()" calls "await Hook.AfterActEntered(State);"
 public class BossAuraSingleton : SingletonModel
 {
     public override bool ShouldReceiveCombatHooks => false;
@@ -22,6 +22,7 @@ public class BossAuraSingleton : SingletonModel
     }
     private IEnumerable<AbstractModel> IterateBossAurasForRunHooks(RunState runState) => [this];
 
+    /// All canonical AuraModels that implement IBossAura
     private List<IBossAura> AllBossAuras => field ??= GetAllBossAuras();
     private static List<IBossAura> GetAllBossAuras() => AuraDb.AllAuras.OfType<IBossAura>().ToList();
     
@@ -29,8 +30,16 @@ public class BossAuraSingleton : SingletonModel
     // Why does this not get the RunState (or at least the ActModel) passed? :(
     public override async Task AfterActEntered()
     {
-        Entry.Logger.Info("Adding Boss Auras for the Act.");
         var runState = GameHelper.GetRunState();
+        // There is no "EndOfAct" hook, so we do it this way.
+        await HandleRemoveAurasAfterAct(runState);
+        await AddBossAurasAtActBegin(runState);
+    }
+    
+   
+    private async Task AddBossAurasAtActBegin(IRunState runState)
+    {
+        Entry.Logger.Info("Adding Boss Auras for the Act.");
         // Aggregate all eligible bosses as well as all boss-auras that can come from those.
         var relations = runState.Act.AllActiveBossEncounter
                     .ToDictionary(e => e
@@ -45,7 +54,7 @@ public class BossAuraSingleton : SingletonModel
             {
                 case 0:
                     continue;
-                case 1:
+                case 1: // Dont call rng if its not necessary.
                     var mutable1 = relation.Value[0].ToMutable();
                     (mutable1 as IBossAura)!.Boss = relation.Key;
                     await AuraCmd.Add(mutable1);
@@ -64,8 +73,45 @@ public class BossAuraSingleton : SingletonModel
             await SaveManager.Instance.SaveRun(null, saveProgress: false);
     }
     
+    // Handle BossAuraEnd.EndOfAct
+    private async Task HandleRemoveAurasAfterAct(IRunState runState)
+    {
+        // We could in theory just clear all boss auras here, because a new act means out with the old and in with the new.
+        // but that would include BossAuraEnd.None auras so I'm not doing it that way.
+        foreach (var bossAura in runState.Auras.OfType<IBossAura>()
+                             .Where(b => b.AuraEnd is BossAuraEnd.EndOfAct)
+                             .Cast<AuraModel>())
+        {
+            await AuraCmd.Remove(bossAura);
+        }
+    }
     
-    
-    // TODO: Handle the end points for the auras
+    // Handle BossAuraEnd.BeforeBosses and BossAuraEnd.BeforeBoss
+    public override async Task BeforeRoomEntered(AbstractRoom room)
+    {
+        if (room.RoomType is not RoomType.Boss || room is not CombatRoom combatRoom) return;
+        
+        var runState = GameHelper.GetRunState();
+        foreach (var bossAura in runState.Auras.OfType<IBossAura>()
+                             .Where(b => b.AuraEnd is BossAuraEnd.BeforeBosses ||
+                                         (b.AuraEnd is BossAuraEnd.BeforeBoss && b.Boss.Id != combatRoom.Encounter.Id))
+                             .Cast<AuraModel>())
+        {
+            await AuraCmd.Remove(bossAura);
+        }
+    }
+
+    // Handle BossAuraEnd.AfterBoss
+    public override async Task AfterCombatEnd(CombatRoom room)
+    {
+        if (room.RoomType is not RoomType.Boss) return;
+        var runState = GameHelper.GetRunState();
+        foreach (var bossAura in runState.Auras.OfType<IBossAura>()
+                             .Where(b => b.AuraEnd is BossAuraEnd.AfterBoss && b.Boss.Id != room.Encounter.Id)
+                             .Cast<AuraModel>())
+        {
+            await AuraCmd.Remove(bossAura);
+        }
+    }
     
 }
