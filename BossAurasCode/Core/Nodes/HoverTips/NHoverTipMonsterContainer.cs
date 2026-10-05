@@ -52,4 +52,7 @@ public partial class NHoverTipMonsterContainer : Control
         };
         Size = size2;
     }
+    
+    
+    
 }

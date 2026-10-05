@@ -21,5 +21,11 @@ public class TestRelic : CustomRelicModel
                 HoverTipFactory.FromPower<StrengthPower>(),
                 HoverTipFactory.FromPower<IntangiblePower>(),
                 HoverTipFactory.FromPower<SlipperyPower>(),
+                HoverTipFactory.FromPower<InfiniteBladesPower>(),
+                HoverTipFactory.FromPower<FocusPower>(),
+                HoverTipFactory.FromPower<FocusedStrikePower>(),
+                HoverTipFactory.FromPower<DebilitatePower>(),
+                HoverTipFactory.FromPower<PanachePower>(),
+                HoverTipFactory.FromPower<TheBombPower>(),
     ];
 }

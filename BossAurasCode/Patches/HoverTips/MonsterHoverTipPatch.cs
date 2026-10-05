@@ -13,6 +13,22 @@ using MegaCrit.Sts2.Core.Nodes.Relics;
 
 namespace BossAuras.Patches.HoverTips;
 
+
+/* TODO: Low Priority
+ The entire monster-hover-tip system is not a good solution. While it works, we can't know how other mods that add hover tip types handle and place theirs.
+ This creates a genuine possibility of overlap. Horrible UX.
+ We can't even say "this is not our fault" because it is. We know this issue can happen and should prevent it.
+ -
+ I believe it is better to abuse the existing HoverTips.
+ (This is just a theory, a GAME theory)
+ We can set the Visibility of the Description field in HoverTips to false. This will collapse its height to 0.
+ Then we add a new Control node and set its minimum height and width. (Look at monster_hover_tip.tscn)
+ We add the monster visuals as a child onto that node.
+ This means that monster tips are mixed in with other hover tips, but we might be able to reshuffle the tips so any monster-tips are last.
+ 
+ Low Priority because the current system works and the chance of overlap is slim.
+ */
+
 [HarmonyPatch]
 public static class MonsterHoverTipPatch
 {
@@ -129,5 +145,40 @@ public static class MonsterHoverTipPatch
         p.X = Mathf.Clamp(p.X, 0f, Mathf.Max(0f, vp.X - c.Size.X));
         p.Y = Mathf.Clamp(p.Y, 0f, Mathf.Max(0f, vp.Y - c.Size.Y));
         c.GlobalPosition = p;
+        
     }
+    
+    // Holding shift when Hovering over a node that creates hover tips, they freeze on screen until you hover over a new interactable node
+    // Using F9 to pause the editor-player has a minute delay, that is enough that the hover tips disappear.
+#if TOOLS
+    
+    static class FreezeHoverTipDebug
+    {
+        internal static bool Frozen;
+    }
+    [HarmonyPatch(typeof(NHoverTipSet), nameof(NHoverTipSet.CreateAndShow),
+                new[] { typeof(Control), typeof(IEnumerable<IHoverTip>), typeof(HoverTipAlignment) })]
+    static class FreezeHoverTip_CreatePatch
+    {
+        static void Prefix()
+        {
+            if (!FreezeHoverTipDebug.Frozen) return;
+            FreezeHoverTipDebug.Frozen = false;
+            NHoverTipSet.Clear();
+        }
+        
+        static void Postfix(NHoverTipSet? __result)
+        {
+            if (__result != null && Input.IsKeyPressed(Key.Shift))
+                FreezeHoverTipDebug.Frozen = true;
+        }
+    }
+
+    [HarmonyPatch(typeof(NHoverTipSet), nameof(NHoverTipSet.Remove))]
+    static class FreezeHoverTip_RemovePatch
+    {
+        static bool Prefix() => !FreezeHoverTipDebug.Frozen;   // false = skip the original Remove
+    }
+    
+#endif
 }

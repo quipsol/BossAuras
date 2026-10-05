@@ -26,7 +26,4 @@ public class MinorBeckon() : CustomCardModel(1, CardType.Status, CardRarity.Stat
     {
         await CreatureCmd.Damage(choiceContext, Owner.Creature, DynamicVars.HpLoss.BaseValue, DamageProps.cardHpLoss, this, null);
     }
-
-    protected override IEnumerable<IHoverTip> ExtraHoverTips =>[MonsterHoverTipFactory.Create<KinFollower>(),
-                HoverTipFactory.FromCard<MinorBeckon>(), HoverTipFactory.Static(StaticHoverTip.Block)];
 }
