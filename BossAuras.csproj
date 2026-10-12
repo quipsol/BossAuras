@@ -1,14 +1,9 @@
 ﻿<Project Sdk="Godot.NET.Sdk/4.5.1" InitialTargets="CheckDependencyPaths">
     <Import Project=".\Sts2PathDiscovery.props"/>
-    <Import Project="build/mod.build.props" />
-    <Import Project="build/mod.build.targets" />
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>true</EnablePreviewFeatures>
-        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-        <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
-        <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
         <ImplicitUsings>true</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -19,35 +14,113 @@
         <!-- Architecture mismatch warning -->
         <NoWarn>$(NoWarn);MSB3270</NoWarn>
     </PropertyGroup>
-
+    
     <ItemGroup>
         <Content Include="project.godot"/>
-        <AdditionalFiles Include="BossAuras/localization/**/*.json"/> <!-- Used by analyzer -->
 
-        <EmbeddedResource Remove="BossAuras/**"/>
-        <Compile Remove="addons\**"/>
-        <Compile Remove="src\**"/>
         <Compile Remove="BossAuras/**"/>
-        <Compile Include="BossAurasCode/**/*.cs"/>
-
-        <!-- If TOOLS is not defined we want to exclude the "editor" folder from being shipped -->
-        <Compile Condition="$(DefineConstants.Contains('TOOLS')) == 'true'" Include="editor\**\*.cs" />
-        <Compile Condition="$(DefineConstants.Contains('TOOLS')) == 'false'" Remove="editor\**\*.cs" />
-
+        <Compile Remove="addons/**"/>
+        <Compile Condition="'$(Configuration)' != 'Debug'" Remove="editor/**"/>
+        <EmbeddedResource Remove="BossAuras/**"/>
+        <EmbeddedResource Remove="addons/**"/>
+        <Folder Include="BossAurasCode\Core\Models\Powers\" />
+        <Folder Include="BossAurasCode\Telemetry\" />
         <None Include="BossAuras/**"/>
         <None Include="BossAurasCode/**"/> <!--Exclude="BossAurasCode/**/*.cs"-->
         <None Include="build/**"/>
         <None Include="editor/**"/>
         <None Include="BossAuras.json"/>
-        <None Include="local.props"/>
         <None Include=".gitignore"/>
-
-        <None Remove=".examples/**"/>
-
+        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="*" PrivateAssets="All"/>
         <PackageReference Update="Alchyr.Sts2.ModAnalyzers" Version="0.1.9" />
-        <!--<GodotResourceFiles Include="BossAuras/**"/>-->
+        <AdditionalFiles Include="BossAuras/localization/**/*.json"/> <!-- Used by analyzer -->
     </ItemGroup>
 
+    <ItemGroup Condition="Exists('$(Sts2DataDir)')">
+        <Reference Include="0Harmony">
+            <HintPath>$(Sts2DataDir)/0Harmony.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="sts2">
+            <HintPath>$(Sts2DataDir)/sts2.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+    </ItemGroup>
+    
+    
+    <Target Name="CheckDependencyPaths">
+        <Error
+                Text=" Slay the Spire 2 data not found at path '$(Sts2DataDir)'"
+                Condition="'$(Sts2DataDir)' == '' or !Exists('$(Sts2DataDir)')"/>
+    </Target>
+
+    <Target Name="UpdateDependencyVersions" BeforeTargets="BeforeBuild" Condition="Exists('.godot/mono/temp/obj/project.assets.json')">
+        <PropertyGroup>
+            <ManifestPath>$(MSBuildProjectName).json</ManifestPath>
+        </PropertyGroup>
+
+        <PropertyGroup>
+            <NuGetData>$([System.IO.File]::ReadAllText(".godot/mono/temp/obj/project.assets.json"))</NuGetData>
+            <ActiveBaseLibVersion>$([System.Text.RegularExpressions.Regex]::Match($(NuGetData), '"Alchyr.Sts2.BaseLib\/([^"]*)').Result('$1'))</ActiveBaseLibVersion>
+            <OldContent>$([System.IO.File]::ReadAllText($(ManifestPath)))</OldContent>
+            <NewContent>$([System.Text.RegularExpressions.Regex]::Replace($(OldContent), '("id":\s*"BaseLib",\s*"min_version":\s*")[^"]*', '${1}$(ActiveBaseLibVersion)'))</NewContent>
+        </PropertyGroup>
+
+        <WriteLinesToFile
+                Condition="'$(OldContent)' != '$(NewContent)'"
+                File="$(ManifestPath)"
+                Lines="$(NewContent)"
+                Overwrite="true"
+                Encoding="UTF-8"/>
+
+        <Message Condition="'$(OldContent)' != '$(NewContent)'"
+                 Text="Updated BaseLib dependency version in mod manifest json to version $(BaseLibVersion)"
+                 Importance="high"/>
+    </Target>
+
+    <!-- Debug builds contain the editor-only code. Debug config goes to GoDot path, others go to Sts2 path -->
+    <Target Name="CopyToGodotModsFolderOnBuild" AfterTargets="PostBuildEvent"
+            Condition="'$(Configuration)' == 'Debug' and '$(GodotModsPath)' != ''">
+        <Message Text="Copying .dll .pdb and .json to the Godot mods folder ($(GodotModsPath))." Importance="high"/>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GodotModsPath)$(MSBuildProjectName)/"/>
+        <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(GodotModsPath)$(MSBuildProjectName)/"/>
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(GodotModsPath)$(MSBuildProjectName)/"/>
+    </Target>
+    <Target Name="CopyToSts2ModsFolderOnBuild" AfterTargets="PostBuildEvent"
+            Condition="'$(Configuration)' != 'Debug'">
+        <Message Text="Copying .dll .pdb and .json to mods folder." Importance="high"/>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
+        <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
+    </Target>
+
+    <Target Name="CopyQuickPck" AfterTargets="PackPck" Condition="Exists('$(PckPackerOutputPath)') And '$(PckPackerSkipped)' != 'true'">
+        <Message Text="Copying quick .pck to mods folder." Importance="high"/>
+        <Copy SourceFiles="$(PckPackerOutputPath)"
+              DestinationFolder="$(ModsPath)/$(MSBuildProjectName)"/>
+    </Target>
+
+    <Target Name="NeedGodotForPublish" BeforeTargets="Publish">
+        <Error Text=" Godot path must be set up before publishing; Godot not found at path '$(GodotPath)'. Check Directory.Build.props file."
+               Condition="'$(GodotPath)' == '' or !Exists('$(GodotPath)')"/>
+    </Target>
+
+    <!-- Make sure the mod's assets are imported (.godot/imported) before packing them. -->
+    <Target Name="GodotImport" BeforeTargets="GodotPublish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
+        <Exec Command="&quot;$(GodotPath)&quot; --headless --audio-driver Dummy --path &quot;$(MSBuildProjectDirectory)&quot; --import --quit"
+              EnvironmentVariables="IsInnerGodotExport=true;MSBUILDDISABLENODEREUSE=1" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true"/>
+    </Target>
+
+    <Target Name="GodotPublish" AfterTargets="Publish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
+        <Message Text="Packing $(MSBuildProjectName)/ into $(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck" Importance="high"/>
+        <Exec Command="&quot;$(GodotPath)&quot; --headless --audio-driver Dummy --path &quot;$(MSBuildProjectDirectory)&quot; -s build/pack_mod.gd -- &quot;$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck&quot; &quot;$(MSBuildProjectName)&quot;"
+              EnvironmentVariables="IsInnerGodotExport=true;MSBUILDDISABLENODEREUSE=1"
+              IgnoreStandardErrorWarningFormat="true"/>
+        <!-- Also give the editor-player the pack, so the manifest's has_pck is satisfied there. -->
+        <Copy SourceFiles="$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck"
+              DestinationFolder="$(GodotModsPath)$(MSBuildProjectName)/"
+              Condition="'$(GodotModsPath)' != ''"/>
+    </Target>
 
 
     <!--    The Sentry addon auto-injects this import; We need the dll in the debug folder but this package takes priority and prohibits it.
@@ -56,9 +129,5 @@
     <Import Project="addons/sentry/dotnet/Sentry.Godot.props" Condition="Exists('addons/sentry/dotnet/Sentry.Godot.props')" />
     <ItemGroup>
         <PackageReference Remove="Sentry"/>
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="BossAurasCode\Core\Models\Powers\" />
-      <Folder Include="BossAurasCode\Telemetry\" />
     </ItemGroup>
 </Project>

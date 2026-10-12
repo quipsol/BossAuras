@@ -2,10 +2,11 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
+
 // ReSharper disable UnusedType.Global
 // ReSharper disable ArrangeTypeModifiers
 
-namespace BossAuras.editor.GameRegistrationBootstrap;
+namespace BossAuras.editor;
 
 /// <summary>
 /// The game makes a few deviations based on whether it runs in the Editor-Player or not. <br/>

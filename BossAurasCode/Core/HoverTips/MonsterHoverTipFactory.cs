@@ -7,12 +7,20 @@ namespace BossAuras.Core.HoverTips;
 
 public static class MonsterHoverTipFactory
 {
-    public static IHoverTip Create<T>() where T : MonsterModel
+    public static IHoverTip FromMonster<T>() where T : MonsterModel
     {
-        return Create(ModelDb.Monster<T>());
+        return FromMonster(ModelDb.Monster<T>());
     }
-    public static IHoverTip Create(MonsterModel monster)
+    public static IHoverTip FromMonster(MonsterModel monster)
     {
         return new MonsterHoverTip(monster);
+    }
+    public static IHoverTip FromCharacter<T>() where T : CharacterModel
+    {
+        return FromCharacter(ModelDb.Character<T>());
+    }
+    public static IHoverTip FromCharacter(CharacterModel character)
+    {
+        return new MonsterHoverTip(character);
     }
 }

@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Encounters;
 using MegaCrit.Sts2.Core.Models.Monsters;
 using MegaCrit.Sts2.Core.Models.Powers;
@@ -17,7 +18,10 @@ public class Vantom : BossAuraModel
     public override BossAuraEnd AuraEnd => BossAuraEnd.BeforeBoss;
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new PowerVar<SlipperyPower>(1)];
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<SlipperyPower>(), MonsterHoverTipFactory.Create<Architect>()];
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<SlipperyPower>(),
+                MonsterHoverTipFactory.FromMonster<Architect>(),
+                MonsterHoverTipFactory.FromCharacter<Silent>(),
+    ];
 
     public override async Task AfterRoomEntered(AbstractRoom room)
     {

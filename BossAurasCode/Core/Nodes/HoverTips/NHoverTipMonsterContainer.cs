@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.HoverTips;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Cards;
 
@@ -19,7 +20,16 @@ public partial class NHoverTipMonsterContainer : Control
     {
         var monsterHoverTip = PreloadManager.Cache.GetScene("res://BossAuras/scenes/ui/monster_hover_tip.tscn").Instantiate<NMonsterHoverTip>(PackedScene.GenEditState.Disabled);
         this.AddChildSafely(monsterHoverTip);
-        monsterHoverTip.SetDisplayMonster(monsterTip.Monster);
+
+        switch (monsterTip.Model)
+        {
+            case MonsterModel m:
+                monsterHoverTip.SetDisplayMonster(m);
+                break;
+            case CharacterModel c:
+                monsterHoverTip.SetDisplayCharacter(c);
+                break;
+        }
     }
     
     

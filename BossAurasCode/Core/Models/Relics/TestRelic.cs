@@ -15,7 +15,7 @@ public class TestRelic : CustomRelicModel
 {
     public override RelicRarity Rarity => RelicRarity.Event;
     
-    protected override IEnumerable<IHoverTip> ExtraHoverTips =>[MonsterHoverTipFactory.Create<KinFollower>(),
+    protected override IEnumerable<IHoverTip> ExtraHoverTips =>[MonsterHoverTipFactory.FromMonster<KinFollower>(),
                 HoverTipFactory.FromCard<MinorBeckon>(), HoverTipFactory.Static(StaticHoverTip.Block),
                 HoverTipFactory.FromPower<DexterityPower>(),
                 HoverTipFactory.FromPower<StrengthPower>(),

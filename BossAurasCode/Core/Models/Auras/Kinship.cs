@@ -39,7 +39,7 @@ public class Kinship : BossAuraModel
     
     protected override IEnumerable<DynamicVar> CanonicalVars => [new(COMBATS, 7), new (HP_PERCENTAGE, 20)];
     // TODO: Create new "Encounter Hover Tip" to display the "Kin Follower" enemy as a HoverTip for the aura!?
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => [MonsterHoverTipFactory.Create<KinFollower>()];
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => [MonsterHoverTipFactory.FromMonster<KinFollower>()];
 
     [SavedProperty]
     private int[] KinshipCoordCols { get; set; } = [];

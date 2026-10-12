@@ -22,6 +22,11 @@ func _init() -> void:
 	var output_path: String = args[0]
 	var mod_folders: PackedStringArray = args.slice(1)
 
+	# PCKPacker doesn't create folders (e.g. the mod's folder in mods/ on the first publish).
+	var output_dir: String = output_path.replace("\\", "/").get_base_dir()
+	if not DirAccess.dir_exists_absolute(output_dir):
+		DirAccess.make_dir_recursive_absolute(output_dir)
+
 	var packer: PCKPacker = PCKPacker.new()
 	var err: int = packer.pck_start(output_path, 16)
 
