@@ -23,6 +23,7 @@ public static class AuraCmd
     public static async Task Add(AuraModel aura)
     {
         Auras.Add(aura);
+        aura.AddInternal(GameHelper.GetRunState());
         GameHelper.GetNMapScreen()?.AuraContainer.AddAura(aura);
         await aura.AfterApplied();
     }
@@ -32,5 +33,6 @@ public static class AuraCmd
         if (!Auras.Contains(aura)) return;
         await aura.BeforeRemoval();
         Auras.Remove(aura);
+        // remove visuals!?
     }
 }

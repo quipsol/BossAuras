@@ -1,10 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using System.Reflection.Emit;
-using BaseLib.Abstracts;
-using Godot;
-using HarmonyLib;
-using MegaCrit.Sts2.Core.Combat;
+﻿using Godot;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Extensions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -12,27 +6,14 @@ using MegaCrit.Sts2.Core.Map;
 using MegaCrit.Sts2.Core.Models.Encounters;
 using MegaCrit.Sts2.Core.Models.Monsters;
 using MegaCrit.Sts2.Core.Models.Powers;
-using MegaCrit.Sts2.Core.Nodes.Combat;
-using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
-using BossAuras;
 using BossAuras.Core.Commands;
 using BossAuras.Core.Helper;
 using BossAuras.Core.HoverTips;
-using BossAuras.Core.Models.Cards;
-using BossAuras.Core.Saves;
-using MegaCrit.Sts2.Core.Entities.Creatures;
-using MegaCrit.Sts2.Core.Entities.Players;
-using MegaCrit.Sts2.Core.Factories;
-using MegaCrit.Sts2.Core.Hooks;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Relics;
-using MegaCrit.Sts2.Core.Random;
-using MegaCrit.Sts2.Core.Rewards;
-using MegaCrit.Sts2.Core.Runs.History;
 using MegaCrit.Sts2.Core.Saves.Runs;
 
 namespace BossAuras.Core.Models.Auras;
@@ -67,21 +48,17 @@ public class Kinship : BossAuraModel, IQuestProvider
     
     public override Task AfterApplied()
     {
-        if (GameHelper.TryGetRunState(out var state))
-        { 
-            AddMarkedRooms(state.Map, state);
-        }
-
+        AddMarkedRooms(RunState.Map);
         return Task.CompletedTask;
     }
 
     public override ActMap ModifyGeneratedMapLate(IRunState runState, ActMap map, int actIndex)
     {
         Entry.Logger.Info("TheKinEffect - ModifyGeneratedMapLate");
-        return AddMarkedRooms(map, runState);
+        return AddMarkedRooms(map);
     }
     
-    private ActMap AddMarkedRooms(ActMap map, IRunState runState) // RunState only used to get that one rng.
+    private ActMap AddMarkedRooms(ActMap map)
     {
         var markedCoords = GetMarkedCoords();
         
@@ -97,7 +74,7 @@ public class Kinship : BossAuraModel, IQuestProvider
         else
         {
             // Rng rng = new Rng(base.Owner, base.Id, 0uL); // Fur coat uses this. We dont have an Owner(Player).
-            var rng = runState.Rng.UpFront;
+            var rng = RunState.Rng.UpFront;
             var mapPoints = map.GetAllMapPoints()
                         .Where(p => p.PointType is MapPointType.Monster or MapPointType.Elite && p.coord.row > 3)
                         .ToList().UnstableShuffle(rng).Take(DynamicVars[COMBATS].IntValue).ToList();
@@ -132,11 +109,10 @@ public class Kinship : BossAuraModel, IQuestProvider
     {
         Entry.Logger.Info("TheKinEffect - AfterRoomEntered");
         if (room is not CombatRoom combatRoom) return;
-        var runState = GameHelper.GetNullableRunState();
-        if (runState?.CurrentMapPoint is null) return;
+        if (RunState.CurrentMapPoint is null) return;
 
         var mapCoords = GetMarkedCoords();
-        if(mapCoords is null || !mapCoords.Contains(runState.CurrentMapPoint.coord)) return;
+        if(mapCoords is null || !mapCoords.Contains(RunState.CurrentMapPoint.coord)) return;
         
         var combatState = combatRoom.CombatState;
         

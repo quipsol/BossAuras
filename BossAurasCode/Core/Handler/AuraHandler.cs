@@ -69,16 +69,16 @@ public class AuraHandler
     private static List<SerializableAura>? GetAurasFromRunState(IRunState rs)
     {
         var auras = GetAuras(rs);
-        if (auras.Count == 0) return null; // null = nothing saved
-        return auras.Select(aura => aura.ToSerializable()).ToList();
+        return auras.Count == 0 ? null : auras.Select(aura => aura.ToSerializable()).ToList();
     }
 
     private static void SetAurasOnRunState(IRunState rs, List<SerializableAura>? saved)
     {
         if (saved == null) return;
-        //SetAuras(rs, saved.Select(AuraModel.FromSerializable).ToList());
-        // We circumvent the map reload on purpose here
-        Auras.Set(rs, saved.Select(AuraModel.FromSerializable).ToList());
+        // We circumvent the map reload that would happen on SetAuras on purpose here
+        var auras = saved.Select(AuraModel.FromSerializable).ToList();
+        foreach (var auraModel in GetAuras(rs)) auraModel.AddInternal(rs);
+        Auras.Set(rs, auras);
     }
 
     private static void Serializer(List<SerializableAura> data, PacketWriter writer)

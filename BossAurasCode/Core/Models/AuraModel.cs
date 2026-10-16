@@ -182,6 +182,15 @@ public abstract class AuraModel : AbstractModel
         CanonicalInstance = ModelDb.GetById<AuraModel>(Id);
     }
 
+    /// <summary>
+    /// NEVER CALL THIS!
+    /// Only AuraCmd.Add and save/load stuff should be calling this.
+    /// </summary>
+    public void AddInternal(IRunState runState)
+    {
+        RunState = runState;
+    }
+    
 
     #region Model specific Hooks
     
