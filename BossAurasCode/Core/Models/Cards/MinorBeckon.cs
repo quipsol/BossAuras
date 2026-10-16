@@ -13,9 +13,8 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace BossAuras.Core.Models.Cards;
 
-// TODO: May replace with a dedicated BossAurasCardModel
 [Pool(typeof(StatusCardPool))]
-public class MinorBeckon() : CustomCardModel(1, CardType.Status, CardRarity.Status, TargetType.None)
+public class MinorBeckon() : BossAurasCardModel(1, CardType.Status, CardRarity.Status, TargetType.None)
 {
     public override string CustomPortraitPath => "res://images/atlases/card_atlas.sprites/status/beckon.tres";
     public override int MaxUpgradeLevel => 0;

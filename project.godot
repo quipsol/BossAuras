@@ -53,6 +53,7 @@ project/assembly_name="BossAuras"
 
 [editor]
 
+pre_patches/enabled=PackedStringArray("modot.baselib.modeldbpreload", "modot.native.separateprojectmods")
 export/convert_text_resources_to_binary=false
 
 [editor_overrides]

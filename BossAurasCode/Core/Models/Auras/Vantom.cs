@@ -25,6 +25,7 @@ public class Vantom : BossAuraModel
 
     public override async Task AfterRoomEntered(AbstractRoom room)
     {
+        Entry.Logger.Info("AfterRoomEntered Vantom");
         if (room is CombatRoom combatRoom)
         {
             foreach (var creature in combatRoom.CombatState.Creatures.Where(c => !c.IsPet))

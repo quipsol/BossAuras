@@ -6,6 +6,7 @@ using BossAuras.Core.Helper;
 using BossAuras.Core.Models;
 using BossAuras.Core.Saves.Runs;
 using BossAuras.Util;
+using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Modding;
@@ -19,6 +20,7 @@ namespace BossAuras.Core.Handler;
 
 /// Connects the AuraModels to the RunState. <br/>
 /// Holds SpireField. Registers Save logic. Subscribes Auras to hooks.
+[HarmonyPatch]
 public class AuraHandler
 {
     #region Accessor
@@ -92,8 +94,11 @@ public class AuraHandler
     #endregion Register Extended Save
     
     
+    
     #region Subscribe Auras to Hooks
     
+    
+    // AuraModels get ALL hooks. Unlike normal models who choose between run and combat, the AuraModel gets ALL.
     private static bool _alreadySubscribed = false;
     internal static void SubscribeForStateHooks()
     {
@@ -103,30 +108,50 @@ public class AuraHandler
             return;
         }
         _alreadySubscribed = true;
-        // yes, we subscribe to both. See below for why.
-        ModHelper.SubscribeForRunStateHooks($"{Entry.MOD_ID_PREFIX}-BOSS_AURA_ITERATOR", IterateBossAurasForRunHooks);
+
         ModHelper.SubscribeForCombatStateHooks($"{Entry.MOD_ID_PREFIX}-BOSS_AURA_ITERATOR", IterateBossAurasForCombatHooks);
     }
+  
+
+    private static IEnumerable<AbstractModel> IterateBossAurasForCombatHooks(CombatState combatState) => combatState.RunState.Auras;
+
     
-    // This will go through the entire "get the CombatState logic" every time a run-hook is called.
-    // May be better to think of a way to store a CombatState reference (not here but in GameHelper)
-    // in a way that guarantees it goes null of combat ends (storing as a weak reference)
-    private static IEnumerable<AbstractModel> IterateBossAurasForRunHooks(RunState runState) 
-        => GameHelper.GetNullableCombatState() is null ? runState.Auras : [];
-    private static IEnumerable<AbstractModel> IterateBossAurasForCombatHooks(CombatState combatState)=> combatState.RunState.Auras;
+    // Some RunHooks pass null as the child CombatState, even though the RunState has a CombatState. So we do this:
+    [HarmonyPatch]
+    internal static class AuraRunHookListenersPatch
+    {
+        // If childCombatState != null, the combat-hook subscription already yields the auras.
+        // If it's null (in or out of combat), nothing else will, so add them here.
+        [HarmonyPatch(typeof(RunState), nameof(RunState.IterateHookListeners))]
+        [HarmonyPostfix]
+        private static void Postfix(RunState __instance, ICombatState? childCombatState, ref IEnumerable<AbstractModel> __result)
+        {
+            if (childCombatState != null) return;
+            __result = Append(__result, __instance);
+        }
+
+        private static IEnumerable<AbstractModel> Append(IEnumerable<AbstractModel> models, RunState runState)
+        {
+            foreach (var model in models) yield return model;
+            foreach (var aura in runState.Auras) yield return aura;
+        }
+    }
+    
+    
     
     #endregion Subscribe Auras to Hooks
 }
 
-// Very specific issue: (putting this at the bottom because it's a lot)
+// Very specific issue: (putting this at the bottom because it's a lot of text)
 /*
 If RunState iterates the models, it will also iterate the combatState IF IT EXISTS
 So during combat, if the model is subscribed for CombatStateHooks this works fine, and they get all hooks.
-But if a hook is fired in the run, outside of combat (e.g. AfterActEntered) it will not fire if the model is only
-subscribing to the combat hooks.
+But if a hook is fired in the run, outside of combat (e.g. AfterActEntered) it will not fire if the model is
+only subscribing to the combat hooks.
+Inverse, if I subscribe to RunStateHooks. I get all the out of combat hooks, but none of the in combat hooks.
 Solution: Subscribe to both, and filter in RunStateHooks if a CombatState exists. If it does, return an empty collection.
 
-Tests using the two Test Singletons without the extra exclusion logic shows the following:
+Tests using two Test Singletons without the extra exclusion logic shows the following:
 [BossAuras] After Act Entered - Run Hooks
 [BossAuras] Before Combat Start - Run Hooks
 [BossAuras] Before Combat Start - Combat Hooks
@@ -137,5 +162,7 @@ Tests with the extra exclusion logic shows:
 [BossAuras] Before Combat Start - Combat Hooks
 [BossAuras] Before Attack - Combat Hooks
 
-
+Unfortunately this was not a full fix (see AfterRoomEntered hook.) :slimepensive:
+Instead we postfix RunState and only return an empty list if a CombatState has been passed.
+It's correct now but damn, why did I have to patch anything..
 */

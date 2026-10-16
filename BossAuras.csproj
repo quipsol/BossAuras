@@ -31,6 +31,8 @@
         <None Include="editor/**"/>
         <None Include="BossAuras.json"/>
         <None Include=".gitignore"/>
+        <None Include="override.cfg"/>
+        <None Include="Directory.Build.props"/>
         <PackageReference Include="Alchyr.Sts2.BaseLib" Version="*" PrivateAssets="All"/>
         <PackageReference Update="Alchyr.Sts2.ModAnalyzers" Version="0.1.9" />
         <AdditionalFiles Include="BossAuras/localization/**/*.json"/> <!-- Used by analyzer -->
@@ -78,13 +80,19 @@
                  Importance="high"/>
     </Target>
 
+    <!-- The editor-player loads only mods/_Always and mods/<Project>Mods (pre-patch modot.native.separateprojectmods),
+         so this project's own mod goes to mods/<Project>Mods/<Project>/. -->
+    <PropertyGroup>
+        <GodotModFolder>$(GodotModsPath)$(MSBuildProjectName)Mods/$(MSBuildProjectName)/</GodotModFolder>
+    </PropertyGroup>
+
     <!-- Debug builds contain the editor-only code. Debug config goes to GoDot path, others go to Sts2 path -->
     <Target Name="CopyToGodotModsFolderOnBuild" AfterTargets="PostBuildEvent"
             Condition="'$(Configuration)' == 'Debug' and '$(GodotModsPath)' != ''">
-        <Message Text="Copying .dll .pdb and .json to the Godot mods folder ($(GodotModsPath))." Importance="high"/>
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GodotModsPath)$(MSBuildProjectName)/"/>
-        <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(GodotModsPath)$(MSBuildProjectName)/"/>
-        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(GodotModsPath)$(MSBuildProjectName)/"/>
+        <Message Text="Copying .dll .pdb and .json to the Godot mods folder ($(GodotModFolder))." Importance="high"/>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GodotModFolder)"/>
+        <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(GodotModFolder)"/>
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(GodotModFolder)"/>
     </Target>
     <Target Name="CopyToSts2ModsFolderOnBuild" AfterTargets="PostBuildEvent"
             Condition="'$(Configuration)' != 'Debug'">
@@ -118,7 +126,7 @@
               IgnoreStandardErrorWarningFormat="true"/>
         <!-- Also give the editor-player the pack, so the manifest's has_pck is satisfied there. -->
         <Copy SourceFiles="$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck"
-              DestinationFolder="$(GodotModsPath)$(MSBuildProjectName)/"
+              DestinationFolder="$(GodotModFolder)"
               Condition="'$(GodotModsPath)' != ''"/>
     </Target>
 

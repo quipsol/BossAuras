@@ -1,7 +1,13 @@
-﻿using BossAuras.Core.Extensions;
+﻿using System.Reflection;
+using BossAuras.Core.Extensions;
 using BossAuras.Core.Handler;
 using BossAuras.Core.Helper;
 using BossAuras.Core.Models;
+using BossAuras.Core.Models.Auras;
+using MegaCrit.Sts2.Core.Localization.DynamicVars;
+using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Models.Potions;
+using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace BossAuras.Core.Commands;
 

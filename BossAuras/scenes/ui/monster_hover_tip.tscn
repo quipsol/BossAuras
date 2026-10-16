@@ -7,7 +7,6 @@
 
 [node name="MonsterHoverTip" type="MarginContainer"]
 offset_right = 360.0
-offset_bottom = 0
 mouse_filter = 2
 script = ExtResource("1_ucgkc")
 metadata/_edit_group_ = true

@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Nodes.Rooms;
 namespace BossAuras.Core.Nodes;
 
 
-// TODO: Allow for mouse hovering and showing hovertips!?
 public partial class NMapAura : Control
 {
     private CanvasItem _background = null!;
