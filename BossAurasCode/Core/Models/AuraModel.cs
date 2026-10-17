@@ -5,6 +5,7 @@ using BossAuras.Core.Models.Auras;
 using BossAuras.Core.Saves;
 using BossAuras.Core.Saves.Runs;
 using Godot;
+using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
@@ -33,12 +34,11 @@ public abstract class AuraModel : AbstractModel
         {
             var description = Description;
             DynamicVars.AddTo(description);
-            // TODO: This causes issues because of Pools. (How do Relics get it? Oh right, they do have a pool)
-            //var prefix = EnergyIconHelper.GetPrefix(this);
-            //description.Add(LocKey.ENERGY_PREFIX, prefix);
+         
+            description.Add(LocKey.ENERGY_PREFIX, LocKey.COLORLESS_ENERGY);
             description.Add(LocKey.SINGLE_STAR_ICON, ResPath.SINGLE_STAR_ICON_IMG_PATH);
-            //foreach (var variable in description.Variables)
-            //    if (variable.Value is EnergyVar energyVar) energyVar.ColorPrefix = prefix;
+            foreach (var variable in description.Variables)
+                if (variable.Value is EnergyVar energyVar) energyVar.ColorPrefix = LocKey.COLORLESS_ENERGY;
             return description;
         }
     }

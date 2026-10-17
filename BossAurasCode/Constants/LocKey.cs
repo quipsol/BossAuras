@@ -2,6 +2,7 @@
 
 public static class LocKey
 {
+    public const string COLORLESS_ENERGY = "colorless";
     public const string ENERGY_PREFIX = "energyPrefix";
     public const string SINGLE_STAR_ICON = "singleStarIcon";
 }
