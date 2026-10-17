@@ -22,10 +22,6 @@ using MegaCrit.Sts2.Core.Runs;
 
 namespace BossAuras.Core.Nodes;
 
-// TODO:
-// The game often exposes a static Instance of UI containers.
-// We could do the same, since realistically, there will only ever be one NMapAuraContainer.
-// Simply use _Create and _ExitTree to set/remove itself from the Instance.
 
 public partial class NMapAuraContainer : Control
 {
