@@ -77,7 +77,7 @@ public class AuraHandler
         if (saved == null) return;
         // We circumvent the map reload that would happen on SetAuras on purpose here
         var auras = saved.Select(AuraModel.FromSerializable).ToList();
-        foreach (var auraModel in GetAuras(rs)) auraModel.AddInternal(rs);
+        foreach (var auraModel in auras) auraModel.AddInternal(rs);
         Auras.Set(rs, auras);
     }
 
@@ -113,7 +113,7 @@ public class AuraHandler
     }
   
 
-    private static IEnumerable<AbstractModel> IterateBossAurasForCombatHooks(CombatState combatState) => combatState.RunState.Auras;
+    private static IEnumerable<AbstractModel> IterateBossAurasForCombatHooks(CombatState combatState) => combatState.RunState.Auras.ToList();
 
     
     // Some RunHooks pass null as the child CombatState, even though the RunState has a CombatState. So we do this:
@@ -133,7 +133,7 @@ public class AuraHandler
         private static IEnumerable<AbstractModel> Append(IEnumerable<AbstractModel> models, RunState runState)
         {
             foreach (var model in models) yield return model;
-            foreach (var aura in runState.Auras) yield return aura;
+            foreach (var aura in runState.Auras.ToList()) yield return aura;
         }
     }
     

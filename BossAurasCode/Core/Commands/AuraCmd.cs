@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Models.Powers;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace BossAuras.Core.Commands;
 
@@ -22,6 +23,7 @@ public static class AuraCmd
     }
     public static async Task Add(AuraModel aura)
     {
+        if (!RunManager.Instance.IsInProgress) return; // safety guards. I'm not even sure I want them. Realistically, when are you calling this outside of a run?
         Auras.Add(aura);
         aura.AddInternal(GameHelper.GetRunState());
         GameHelper.GetNMapScreen()?.AuraContainer.AddAura(aura);
@@ -30,9 +32,10 @@ public static class AuraCmd
 
     public static async Task Remove(AuraModel aura)
     {
+        if (!RunManager.Instance.IsInProgress) return;
         if (!Auras.Contains(aura)) return;
         await aura.BeforeRemoval();
         Auras.Remove(aura);
-        // remove visuals!?
+        GameHelper.GetNMapScreen()?.AuraContainer.RemoveAura(aura);
     }
 }

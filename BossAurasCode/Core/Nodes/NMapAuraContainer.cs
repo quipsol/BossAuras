@@ -119,8 +119,8 @@ public partial class NMapAuraContainer : Control
         var nMapAura = _nMapAuras.FirstOrDefault(a => a.Model == aura);
         if (nMapAura is null) return;
         _nMapAuras.Remove(nMapAura);
-        nMapAura.QueueFreeSafely(); 
-        //Callable.From(ResetSize).CallDeferred();
+        nMapAura.QueueFreeSafely();
+        UpdateVisibility();
     }
     
     private void UpdateVisibility() => Visible = _nMapAuras.Count != 0;

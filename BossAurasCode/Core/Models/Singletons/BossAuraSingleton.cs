@@ -27,6 +27,10 @@ public class BossAuraSingleton : SingletonModel
     private static List<IBossAura> GetAllBossAuras() => AuraDb.AllAuras.OfType<IBossAura>().ToList();
     
     
+    // TODO:
+    // This hook fires while the map is visible when entering Act 2 and 3, so you see the auras appear and disappear on the map.
+    // This might be fine, Will need to see how it looks when auras from act 2 and 3 are added.
+    
     // Why does this not get the RunState (or at least the ActModel) passed? :(
     public override async Task AfterActEntered()
     {
@@ -92,13 +96,16 @@ public class BossAuraSingleton : SingletonModel
         if (room.RoomType is not RoomType.Boss || room is not CombatRoom combatRoom) return;
         
         var runState = GameHelper.GetRunState();
-        foreach (var bossAura in runState.Auras.OfType<IBossAura>()
-                             .Where(b => b.AuraEnd is BossAuraEnd.BeforeBosses ||
-                                         (b.AuraEnd is BossAuraEnd.BeforeBoss && b.Boss.Id != combatRoom.Encounter.Id))
-                             .Cast<AuraModel>())
-        {
+        var toRemove = runState.Auras.OfType<IBossAura>()
+                    .Where(b => b.AuraEnd is BossAuraEnd.BeforeBosses ||
+                                (b.AuraEnd is BossAuraEnd.BeforeBoss && b.Boss?.Id == combatRoom.Encounter.Id))
+                    .Cast<AuraModel>()
+                    .ToList();
+        foreach (var bossAura in toRemove)
             await AuraCmd.Remove(bossAura);
-        }
+        var a = runState.Auras;
+        Entry.Logger.Info("gfsf");
+
     }
 
     // Handle BossAuraEnd.AfterBoss
@@ -107,7 +114,7 @@ public class BossAuraSingleton : SingletonModel
         if (room.RoomType is not RoomType.Boss) return;
         var runState = GameHelper.GetRunState();
         foreach (var bossAura in runState.Auras.OfType<IBossAura>()
-                             .Where(b => b.AuraEnd is BossAuraEnd.AfterBoss && b.Boss.Id != room.Encounter.Id)
+                             .Where(b => b.AuraEnd is BossAuraEnd.AfterBoss && b.Boss.Id == room.Encounter.Id)
                              .Cast<AuraModel>())
         {
             await AuraCmd.Remove(bossAura);
