@@ -1,5 +1,6 @@
 ﻿using BossAuras.Core.Handler;
 using BossAuras.Core.Models;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace BossAuras.Core.Extensions;
@@ -17,5 +18,8 @@ public static class RunStateExtensions
             get => AuraHandler.GetAuras(runState);
             set => AuraHandler.SetAuras(runState, value);
         }
+
+        /// Returns the first AuraModel that matches the ID, or null.
+        public AuraModel? GetAuraById(ModelId id) => runState.Auras.FirstOrDefault(a => a.Id == id);
     }
 }

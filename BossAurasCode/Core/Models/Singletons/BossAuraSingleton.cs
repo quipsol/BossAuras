@@ -84,7 +84,7 @@ public class BossAuraSingleton : SingletonModel
         // but that would include BossAuraEnd.None auras so I'm not doing it that way.
         foreach (var bossAura in runState.Auras.OfType<IBossAura>()
                              .Where(b => b.AuraEnd is BossAuraEnd.EndOfAct)
-                             .Cast<AuraModel>())
+                             .Cast<AuraModel>().ToList())
         {
             await AuraCmd.Remove(bossAura);
         }
