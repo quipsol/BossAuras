@@ -1,6 +1,8 @@
 ﻿using BossAuras.Core.Models.Cards;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
@@ -19,17 +21,18 @@ public class SoulFysh : BossAuraModel
     protected override IEnumerable<DynamicVar> CanonicalVars => [new CardsVar(1)];
     protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromCard<MinorBeckon>()];
     
-    public override async Task AfterRoomEntered(AbstractRoom room)
+    public override async Task AfterSideTurnStart(CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
     {
-        if (room is CombatRoom combatRoom)
+        if (combatState.RoundNumber > 1) return;
+        if (side != CombatSide.Player) return;
+        foreach (var player in combatState.Players)
         {
-            foreach (var player in combatRoom.CombatState.Players)
-            {
-                var cardModel = combatRoom.CombatState.CreateCard<MinorBeckon>(player);
-                // generate in center of screen, then move to Discard
-                await CardPileCmd.AddGeneratedCardToCombat(cardModel, PileType.Play, player);
-                await CardPileCmd.Add(cardModel, PileType.Discard); 
-            }
+            var cardModel = combatState.CreateCard<MinorBeckon>(player);
+            // generate in center of screen, then move to Discard
+            // TODO: Replace with card preview
+            await CardPileCmd.AddGeneratedCardToCombat(cardModel, PileType.Play, player);
+            await CardPileCmd.Add(cardModel, PileType.Discard); 
         }
+        
     }
 }
