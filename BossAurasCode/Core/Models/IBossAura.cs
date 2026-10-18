@@ -1,5 +1,4 @@
-﻿using BossAuras.Core.Models.Singletons;
-using MegaCrit.Sts2.Core.Models;
+﻿using MegaCrit.Sts2.Core.Models;
 
 namespace BossAuras.Core.Models;
 
