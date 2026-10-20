@@ -50,7 +50,10 @@ public class AuraConsoleCmd : AbstractConsoleCmd
             TaskHelper.RunSafely(AuraCmd.Remove(mutableAura));
             return new CmdResult(success: true, "Aura removed!");
         }
-        TaskHelper.RunSafely(AuraCmd.Add(canonicalAura.ToMutable()));
+
+        var mutableAura2 = canonicalAura.ToMutable();
+        mutableAura2.DebugOnlySetup(issuingPlayer.RunState);
+        TaskHelper.RunSafely(AuraCmd.Add(mutableAura2));
         return new CmdResult(success: true, "Added Rura '" + text + "'");
     }
     

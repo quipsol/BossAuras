@@ -84,13 +84,13 @@ public static class BossAuraHandler
     }
 
    
-    
+    /// CurrentRoom is null at this point AAAAAAAA
     [HarmonyPatch(typeof(RunManager), "EnterRoomInternal", MethodType.Async)]
     [HarmonyTranspiler]
     private static List<CodeInstruction> RemoveBeforeRoomEntered(ILGenerator generator, IEnumerable<CodeInstruction> instructions, MethodBase original)
     {
         return AsyncMethodCall.Create(generator, instructions, original,
-                    AccessTools.Method(typeof(BossAuraHandler), nameof(RemoveBossAurasAfterCombat)),
+                    AccessTools.Method(typeof(BossAuraHandler), nameof(RemoveBossAurasBeforeRoomEntered)),
                     beforeState: AccessTools.Method(typeof(Hook), nameof(Hook.BeforeRoomEntered)));
     }
     
@@ -134,10 +134,11 @@ public static class BossAuraHandler
             await AuraCmd.Remove(bossAura);
     }
 
+    // I could do the same below and then get from the turnState the cobmatStae.RunState. But CombatTurnState is an internal class :)
     private static async Task RemoveBossAurasAfterCombat()
     {
         if (!GameHelper.TryGetRunState(out var runState)) return;
-        var room = (CombatRoom?)runState.CurrentRoom; // This method is only called through CombatManager.EndCombatInternal
+        var room = (CombatRoom?)runState.CurrentRoom; // EndCombatInternal does the same check
         if (room?.RoomType is not RoomType.Boss) return;
         var toRemove = runState.Auras.OfType<IBossAura>()
                     .Where(b => b.AuraEnd is BossAuraEnd.AfterBoss && b.Boss.Id == room.Encounter.Id)
@@ -146,11 +147,10 @@ public static class BossAuraHandler
             await AuraCmd.Remove(bossAura);
     }
     
-    
-    private static async Task RemoveBeforeRoomEntered()
+    // NOTE TO SELF: AsyncMethodCall passes parameters forward if they match EXACTLY
+    private static async Task RemoveBossAurasBeforeRoomEntered(AbstractRoom room)
     {
         if (!GameHelper.TryGetRunState(out var runState)) return;
-        var room = runState.CurrentRoom;
         if (room?.RoomType is not RoomType.Boss || room is not CombatRoom combatRoom) return;
         
         var toRemove = runState.Auras.OfType<IBossAura>()

@@ -190,7 +190,9 @@ public abstract class AuraModel : AbstractModel
     {
         RunState = runState;
     }
-    
+
+    /// NEVER CALL THIS! <br/> Allows an Aura to set up fields in itself it requires to prevent crashing. Called from AuraConsoleCmd only!
+    public virtual void DebugOnlySetup(IRunState runState) { }
 
     #region Model specific Hooks
     
