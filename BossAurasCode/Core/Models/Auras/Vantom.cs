@@ -18,10 +18,7 @@ public class Vantom : BossAuraModel
     public override BossAuraEnd AuraEnd => BossAuraEnd.BeforeBoss;
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new PowerVar<SlipperyPower>(1)];
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<SlipperyPower>(),
-                MonsterHoverTipFactory.FromMonster<Architect>(),
-                MonsterHoverTipFactory.FromCharacter<Silent>(),
-    ];
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<SlipperyPower>()];
 
     public override async Task AfterRoomEntered(AbstractRoom room)
     {

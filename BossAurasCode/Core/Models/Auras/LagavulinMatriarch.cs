@@ -2,6 +2,7 @@
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Encounters;
@@ -16,7 +17,7 @@ public class LagavulinMatriarch : BossAuraModel
     public override BossAuraEnd AuraEnd => BossAuraEnd.BeforeBoss;
     
     protected override IEnumerable<DynamicVar> CanonicalVars => [new (TURN, 5), new PowerVar<StrengthPower>(-1), new PowerVar<DexterityPower>(-1)];
-    
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<StrengthPower>(), HoverTipFactory.FromPower<DexterityPower>()];
     public override async Task AfterSideTurnStart(CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
     {
         if (side != CombatSide.Player) return;
