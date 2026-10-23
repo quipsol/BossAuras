@@ -3,17 +3,14 @@ using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
-using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Encounters;
-using MegaCrit.Sts2.Core.Models.Powers;
-using MegaCrit.Sts2.Core.Rooms;
 
 namespace BossAuras.Core.Models.Auras;
-// TODO Rename
-public class SoulFysh : BossAuraModel
+
+public class Lure : BossAuraModel
 {
     public override List<EncounterModel> Bosses => [ModelDb.Encounter<SoulFyshBoss>()];
     public override BossAuraEnd AuraEnd => BossAuraEnd.BeforeBoss;

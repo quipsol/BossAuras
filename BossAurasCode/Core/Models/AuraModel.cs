@@ -1,12 +1,8 @@
-﻿using System.Runtime.InteropServices;
-using System.Text;
-using BossAuras.Constants;
+﻿using BossAuras.Constants;
 using BossAuras.Core.Models.Auras;
 using BossAuras.Core.Saves;
 using BossAuras.Core.Saves.Runs;
 using Godot;
-using MegaCrit.Sts2.Core.Context;
-using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
@@ -18,6 +14,11 @@ namespace BossAuras.Core.Models;
 
 // TODO:
 // Flash(): Something that signals the player "hey, the aura just did something" to prevent confusion
+// Potentially have multiple Flash options.
+// Flash during open map
+// Flash during combat (general)
+// Flash during combat (on creature)
+
 public abstract class AuraModel : AbstractModel
 {
     /// Name of LocTable
@@ -34,7 +35,6 @@ public abstract class AuraModel : AbstractModel
         {
             var description = Description;
             DynamicVars.AddTo(description);
-         
             description.Add(LocKey.ENERGY_PREFIX, LocKey.COLORLESS_ENERGY);
             description.Add(LocKey.SINGLE_STAR_ICON, ResPath.SINGLE_STAR_ICON_IMG_PATH);
             foreach (var variable in description.Variables)
@@ -130,6 +130,10 @@ public abstract class AuraModel : AbstractModel
     
     public override bool ShouldReceiveCombatHooks => true;
     
+    
+    public event Action? DisplayAmountChanged;
+    
+    
     protected override void DeepCloneFields()
     {
         base.DeepCloneFields();
@@ -175,11 +179,16 @@ public abstract class AuraModel : AbstractModel
         return auraModel;
     }
 
+    protected void InvokeDisplayAmountChanged()
+    {
+        DisplayAmountChanged?.Invoke();
+    }
 
     protected override void AfterCloned()
     {
         base.AfterCloned();
         CanonicalInstance = ModelDb.GetById<AuraModel>(Id);
+        DisplayAmountChanged = null;
     }
 
     /// <summary>

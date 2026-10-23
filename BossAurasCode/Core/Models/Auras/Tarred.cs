@@ -11,8 +11,8 @@ using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Rooms;
 
 namespace BossAuras.Core.Models.Auras;
-// TODO Rename
-public class Vantom : BossAuraModel
+
+public class Tarred : BossAuraModel
 {
     public override List<EncounterModel> Bosses => [ModelDb.Encounter<VantomBoss>()];
     public override BossAuraEnd AuraEnd => BossAuraEnd.BeforeBoss;
@@ -22,7 +22,6 @@ public class Vantom : BossAuraModel
 
     public override async Task AfterRoomEntered(AbstractRoom room)
     {
-        Entry.Logger.Info("AfterRoomEntered Vantom");
         if (room is CombatRoom combatRoom)
         {
             foreach (var creature in combatRoom.CombatState.Creatures.Where(c => !c.IsPet))
