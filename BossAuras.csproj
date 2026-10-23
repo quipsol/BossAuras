@@ -19,16 +19,11 @@
         <Content Include="project.godot"/>
 
         <Compile Remove="BossAuras/**"/>
-        <Compile Remove="addons/**"/>
-        <Compile Condition="'$(Configuration)' != 'Debug'" Remove="editor/**"/>
         <EmbeddedResource Remove="BossAuras/**"/>
-        <EmbeddedResource Remove="addons/**"/>
         <Folder Include="BossAurasCode\Core\Models\Powers\" />
         <Folder Include="BossAurasCode\Telemetry\" />
         <None Include="BossAuras/**"/>
         <None Include="BossAurasCode/**"/> <!--Exclude="BossAurasCode/**/*.cs"-->
-        <None Include="build/**"/>
-        <None Include="editor/**"/>
         <None Include="BossAuras.json"/>
         <None Include=".gitignore"/>
         <None Include="override.cfg"/>
@@ -80,9 +75,9 @@
                  Importance="high"/>
     </Target>
 
-    <!-- The editor-player loads only mods/_Always and mods/<Project>Mods (pre-patch modot.native.separateprojectmods),
-         so this project's own mod goes to mods/<Project>Mods/<Project>/. -->
+
     <PropertyGroup>
+        <ModPacker Condition="'$(ModPacker)' == ''">modot.default</ModPacker>
         <GodotModFolder>$(GodotModsPath)$(MSBuildProjectName)Mods/$(MSBuildProjectName)/</GodotModFolder>
     </PropertyGroup>
 
@@ -112,16 +107,18 @@
         <Error Text=" Godot path must be set up before publishing; Godot not found at path '$(GodotPath)'. Check Directory.Build.props file."
                Condition="'$(GodotPath)' == '' or !Exists('$(GodotPath)')"/>
     </Target>
-
-    <!-- Make sure the mod's assets are imported (.godot/imported) before packing them. -->
-    <Target Name="GodotImport" BeforeTargets="GodotPublish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
-        <Exec Command="&quot;$(GodotPath)&quot; --headless --audio-driver Dummy --path &quot;$(MSBuildProjectDirectory)&quot; --import --quit"
-              EnvironmentVariables="IsInnerGodotExport=true;MSBUILDDISABLENODEREUSE=1" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true"/>
-    </Target>
-
+    
     <Target Name="GodotPublish" AfterTargets="Publish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
-        <Message Text="Packing $(MSBuildProjectName)/ into $(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck" Importance="high"/>
-        <Exec Command="&quot;$(GodotPath)&quot; --headless --audio-driver Dummy --path &quot;$(MSBuildProjectDirectory)&quot; -s build/pack_mod.gd -- &quot;$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck&quot; &quot;$(MSBuildProjectName)&quot;"
+        <!-- Exec runs its command as a batch file, where every line is a command of its own, so the arguments are put
+             together here, one per line, and the command stays on one line. -->
+        <PropertyGroup>
+            <PackModArgs>--headless</PackModArgs>
+            <PackModArgs>$(PackModArgs) --audio-driver Dummy</PackModArgs>
+            <PackModArgs>$(PackModArgs) --path &quot;$(MSBuildProjectDirectory)&quot;</PackModArgs>
+            <PackModArgs>$(PackModArgs) --pack-mod &quot;$(ModPacker)&quot; &quot;$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck&quot;</PackModArgs>
+        </PropertyGroup>
+        <Message Text="Packing $(MSBuildProjectName) with the mod packer $(ModPacker) into $(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck" Importance="high"/>
+        <Exec Command="&quot;$(GodotPath)&quot; $(PackModArgs)"
               EnvironmentVariables="IsInnerGodotExport=true;MSBUILDDISABLENODEREUSE=1"
               IgnoreStandardErrorWarningFormat="true"/>
         <!-- Also give the editor-player the pack, so the manifest's has_pck is satisfied there. -->
@@ -130,12 +127,5 @@
               Condition="'$(GodotModsPath)' != ''"/>
     </Target>
 
-
-    <!--    The Sentry addon auto-injects this import; We need the dll in the debug folder but this package takes priority and prohibits it.
-            Option 1: Leave the auto import and manually add Sentry.dll to the folder (Can be found in the games installation directory)
-            Option 2: Immediately remove the Package again, so the reference settings in mod.build.props take over-->
-    <Import Project="addons/sentry/dotnet/Sentry.Godot.props" Condition="Exists('addons/sentry/dotnet/Sentry.Godot.props')" />
-    <ItemGroup>
-        <PackageReference Remove="Sentry"/>
-    </ItemGroup>
+    
 </Project>
