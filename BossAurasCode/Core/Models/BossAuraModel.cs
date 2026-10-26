@@ -27,8 +27,6 @@ public abstract class BossAuraModel : AuraModel, IBossAura
     /// Find an active Boss matching the Bosses list. If none is found, use the first active Boss.
     public override void DebugOnlySetup(IRunState runState)
     {
-        Entry.Logger.Info("DebugOnlySetup");
         Boss = runState.Act.AllActiveBossEncounter.FirstOrDefault(b => Bosses.Contains(b.CanonicalInstance)) ?? runState.Act.BossEncounter;
-        Entry.Logger.Info("DebugOnlySetup After");
     }
 }

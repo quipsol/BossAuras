@@ -9,10 +9,12 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
         <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
-        <PathMap>$(AppOutputBase)=.\</PathMap>
         <GodotDisabledSourceGenerators>GodotPluginsInitializer</GodotDisabledSourceGenerators>
         <!-- Architecture mismatch warning -->
         <NoWarn>$(NoWarn);MSB3270</NoWarn>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
+        <PathMap>$(AppOutputBase)=.\</PathMap>
     </PropertyGroup>
     
     <ItemGroup>
