@@ -18,8 +18,9 @@
   "BOSSAURAS-UNSTABLE_CORE.title": "Unstable Core",
   "BOSSAURAS-UNSTABLE_CORE.description": "At the end of your turn [blue]{Turn}[/blue], deal [blue]{Damage}[/blue] damage to ALL creatures.",
   "BOSSAURAS-POWER_SURGE.title": "Power Surge",
-  "BOSSAURAS-POWER_SURGE.description": "Whenever you play a [blue]Power[/blue] card increase the amount of [gold]Steam Eruption[/gold] the [gold]Waterfall Giant[/gold] starts with by [blue]{Increase}[/blue].\n[gold]Steam Eruption[/gold] is currently increased by [blue]{ExtraSteam}[/blue]."
+  "BOSSAURAS-POWER_SURGE.description": "Whenever you play a [blue]Power[/blue] card increase the amount of [gold]Steam Eruption[/gold] the [gold]Waterfall Giant[/gold] starts with by [blue]{Increase}[/blue].\n[gold]Steam Eruption[/gold] is currently increased by [blue]{ExtraSteam}[/blue].",
   
   
-
+  "BOSSAURAS-SUBSERVIENT.title": "Subservient",
+  "BOSSAURAS-SUBSERVIENT.description": "You are afflicted with [gold]Chains of Binding[/gold] [blue]{ChainsOfBindingPower}[/blue] during combat."
 }
