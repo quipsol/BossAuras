@@ -1,4 +1,5 @@
-﻿using BossAuras.Core.HoverTips;
+﻿using BossAuras.Core.Helper;
+using BossAuras.Core.HoverTips;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
@@ -62,15 +63,11 @@ public class AggressiveSiphoning : BossAuraModel, IQuestProvider
         return input.Select(mapCoord => new MapCoord(mapCoord.Y, mapCoord.X)).ToList();
     }
     
-     public List<MapCoord>? GetMarkedCoords() 
+    public List<MapCoord>? GetMarkedCoords() 
         => !CoordsSet ? null : CoordCols.Select((element, index) => new MapCoord { col = element, row = CoordRows[index] }).ToList();
 
-    
-    public override Task AfterApplied()
-    {
-        AddMarkedRooms(RunState.Map);
-        return Task.CompletedTask;
-    }
+
+    public override Task AfterApplied() => TaskHelper.Done(AddMarkedRooms(RunState.Map));
 
     public override ActMap ModifyGeneratedMapLate(IRunState runState, ActMap map, int actIndex)
     {
@@ -87,7 +84,7 @@ public class AggressiveSiphoning : BossAuraModel, IQuestProvider
             foreach (var mapCoord in markedCoords)
             {
                 var point = map.GetPoint(mapCoord);
-                if (point == null) throw new InvalidOperationException($"Loaded a kinship map with coordinate {mapCoord}, but the generated map does not contain that coordinate!");
+                if (point == null) throw new InvalidOperationException($"Loaded an aggressive siphoning map with coordinate {mapCoord}, but the generated map does not contain that coordinate!");
                 point.AddQuest(this);
             }
         }
@@ -125,11 +122,10 @@ public class AggressiveSiphoning : BossAuraModel, IQuestProvider
         
         if (combatRoom.Encounter is LagavulinMatriarchBoss)
         {
-            await PowerCmd.Apply<StrengthPower>(new ThrowingPlayerChoiceContext(), combatRoom.CombatState.Enemies, DynamicVars[SIPHON_COUNT].BaseValue, null, null);
-        }
-        // else if(_isMarkedRoom)
-        //     await PowerCmd.Apply<DexterityPower>(new ThrowingPlayerChoiceContext(), combatRoom.CombatState.Allies.Where(a => a is { IsPet: false, IsAlive: true }), -DynamicVars[nameof(DexterityPower)].BaseValue, null, null);
-        
+            var lagavulinMatriarchs = combatRoom.CombatState.Enemies.Where(e => e.Monster is LagavulinMatriarch).ToList();
+            FlashCreatures(lagavulinMatriarchs);
+            await PowerCmd.Apply<StrengthPower>(new ThrowingPlayerChoiceContext(), lagavulinMatriarchs, DynamicVars[SIPHON_COUNT].BaseValue, null, null);
+        } 
     }
     
     public override async Task AfterSideTurnStart(CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
@@ -138,10 +134,16 @@ public class AggressiveSiphoning : BossAuraModel, IQuestProvider
         if (side != CombatSide.Player) return;
         if (combatState.RoundNumber == DynamicVars[TURN].IntValue)
         {
+            FlashCombat();
             SiphonCount++;
         }
-        if(combatState.RoundNumber < 4)
+
+        if (combatState.RoundNumber < 4)
+        {
+            FlashCreatures(combatState.Enemies);
             await PowerCmd.Apply<StrengthPower>(new ThrowingPlayerChoiceContext(), combatState.Enemies, -DynamicVars[nameof(StrengthPower)].BaseValue, null, null);
+        }
+
         
     }
     

@@ -27,12 +27,14 @@ public class BoomingEcho : BossAuraModel
         if (side != CombatSide.Player) return;
         if (combatState.RoundNumber == DynamicVars[TURN].BaseValue)
         {
+            FlashCombat();
             foreach (var creature in combatState.HittableEnemies)
                 await CreatureCmd.Stun(creature);
         }
         
         if (combatState.RoundNumber == DynamicVars[TURN].BaseValue + 1)
         {
+            FlashCombat();
             await PowerCmd.Apply<RingingPower>(new ThrowingPlayerChoiceContext(), combatState.Allies.Where(a => !a.IsPet), DynamicVars[nameof(RingingPower)].BaseValue, null, null);
         }
     }

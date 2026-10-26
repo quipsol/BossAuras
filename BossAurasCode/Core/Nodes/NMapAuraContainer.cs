@@ -122,7 +122,6 @@ public partial class NMapAuraContainer : Control
     private void UpdateVisibility() => Visible = _nMapAuras.Count != 0;
     
     // TODO: Create a playable card that Purges and creates a new Aura, as a test on how to handle auras appearing at any point (and handle duplicates)
-    // TODO: Also add new console command "aura AURA_ID"
     
     
     

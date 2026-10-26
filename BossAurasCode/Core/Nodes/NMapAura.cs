@@ -58,15 +58,27 @@ public partial class NMapAura : Control
         Connect(Control.SignalName.FocusExited, Callable.From(OnUnfocus));
         Connect(Control.SignalName.MouseEntered, Callable.From(OnFocus));
         Connect(Control.SignalName.MouseExited, Callable.From(OnUnfocus));
-        Model.DisplayAmountChanged += OnDisplayAmountChanged;
+        SubscribeToAuraEvents();
         Reload();
     }
 
     public override void _ExitTree()
     {
-        Model.DisplayAmountChanged -= OnDisplayAmountChanged;
+        UnsubscribeFromAuraEvents();
     }
 
+    private void SubscribeToAuraEvents()
+    {
+        Model.DisplayAmountChanged += OnDisplayAmountChanged;
+        Model.Flashed += Flash;
+    }
+    
+    private void UnsubscribeFromAuraEvents()
+    {
+        Model.DisplayAmountChanged -= OnDisplayAmountChanged;
+        Model.Flashed -= Flash;
+    }
+    
     public void Reload()
     {
         _title.SetTextAutoSize(Title);
@@ -97,5 +109,10 @@ public partial class NMapAura : Control
     {
         Entry.Logger.Info("OnDisplayAmountChanged fired!");
         Reload();
+    }
+
+    private void Flash()
+    {
+        // Something build into the MapAura node that makes a sheen go over it or something
     }
 }

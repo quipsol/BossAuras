@@ -13,8 +13,13 @@
   "BOSSAURAS-SLOW_SIPHON.description" : "At the beginning of turn [blue]{Turn}[/blue] every creature loses [blue]{StrengthPower}[/blue] [gold]Strength[/gold] and [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
   "BOSSAURAS-AGGRESSIVE_SIPHONING.title" : "Aggressive Siphoning",
   "BOSSAURAS-AGGRESSIVE_SIPHONING.description" : "Some combats are being siphoned by [gold]Lagavulin Matriarch[/gold].\nAt the start of the first three turns, ALL enemies lose [blue]{StrengthPower}[/blue] [gold]Strength[/gold].\nIf the combat reaches turn [blue]{Turn}[/blue], [gold]Lagavulin Matriarch[/gold] gains [blue]{StrengthPower}[/blue] [gold]Strength[/gold].\n[gold]Strength[/gold] Siphoned: [blue]{SiphonCount}[/blue]",
-
   "BOSSAURAS-LURE.title" : "Lure",
-  "BOSSAURAS-LURE.description" : "Begin each combat with [blue]{Cards}[/blue] [gold]Minor Beckon[/gold] in your discard pile."
+  "BOSSAURAS-LURE.description" : "Begin each combat with [blue]{Cards}[/blue] [gold]Minor Beckon[/gold] in your discard pile.",
+  "BOSSAURAS-UNSTABLE_CORE.title": "Unstable Core",
+  "BOSSAURAS-UNSTABLE_CORE.description": "At the end of your turn [blue]{Turn}[/blue], deal [blue]{Damage}[/blue] damage to ALL creatures.",
+  "BOSSAURAS-POWER_SURGE.title": "Power Surge",
+  "BOSSAURAS-POWER_SURGE.description": "Whenever you play a [blue]Power[/blue] card increase the amount of [gold]Steam Eruption[/gold] the [gold]Waterfall Giant[/gold] starts with by [blue]{Increase}[/blue].\n[gold]Steam Eruption[/gold] is currently increased by [blue]{ExtraSteam}[/blue]."
+  
+  
 
 }

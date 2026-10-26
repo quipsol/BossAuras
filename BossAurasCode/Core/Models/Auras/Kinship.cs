@@ -14,6 +14,8 @@ using BossAuras.Core.HoverTips;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes.Combat;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Saves.Runs;
 
 namespace BossAuras.Core.Models.Auras;
@@ -46,11 +48,7 @@ public class Kinship : BossAuraModel, IQuestProvider
         => !KinshipCoordsSet ? null : KinshipCoordCols.Select((element, index) => new MapCoord { col = element, row = KinshipCoordRows[index] }).ToList();
 
     
-    public override Task AfterApplied()
-    {
-        AddMarkedRooms(RunState.Map);
-        return Task.CompletedTask;
-    }
+    public override Task AfterApplied() => TaskHelper.Done(AddMarkedRooms(RunState.Map));
 
     public override ActMap ModifyGeneratedMapLate(IRunState runState, ActMap map, int actIndex)
     {
@@ -121,6 +119,7 @@ public class Kinship : BossAuraModel, IQuestProvider
         await PowerCmd.Apply<MinionPower>(new ThrowingPlayerChoiceContext(), target, 1m, null, null);
         target.SetCurrentHpInternal(target.MaxHp * 0.2m); // replace fix .2 with DynamicVar
         SpawnHelper.RepositionEnemies(combatState);
+        FlashCreatures(target);
     }
     
     public string MarkerPath => "res://BossAuras/images/map_markers/missing_marker.png";

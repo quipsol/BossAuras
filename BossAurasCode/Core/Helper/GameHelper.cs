@@ -22,7 +22,7 @@ public class GameHelper
     }
     /// Returns the currently active IRunState object or null
     public static IRunState? GetNullableRunState() => RunManager.Instance.DebugOnlyGetState() ?? null;
-    /// Returns the currently active IRunState object if it exists, otherwise throw a NRE
+    /// Returns the currently active IRunState object if it exists, otherwise throw an NRE
     public static IRunState GetRunState() => GetNullableRunState() ?? throw new NullReferenceException();
     
     

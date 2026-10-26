@@ -3,6 +3,7 @@ using BossAuras.Core.Models.Auras;
 using BossAuras.Core.Saves;
 using BossAuras.Core.Saves.Runs;
 using Godot;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
@@ -132,6 +133,38 @@ public abstract class AuraModel : AbstractModel
     
     
     public event Action? DisplayAmountChanged;
+    public event Action? Flashed;
+    public event Action<AuraModel>? FlashedRoom;
+    public event Action<AuraModel>? FlashedCombat;
+    public event Action<AuraModel, IEnumerable<Creature>>? FlashedCreatures;
+
+
+    protected void InvokeDisplayAmountChanged() => DisplayAmountChanged?.Invoke();
+    
+    // They should all trigger the normal Flash too, in case the map was open as it happened!?
+    
+    // When to flash? It doesn't make sense to always flash. Lure always adds the card into your discard pile.
+    // This will always happen, and you always see the card being added.
+    // Flashing here would be completely unnecessary.
+    // In general, I should later unify flashing and set up some guidelines when I flash and what I flash.
+    // Aggressive siphon takes from all creatures every turn. Should it flash at all? (yes)
+    // Should it flash on every creature or just a generic combat room flash?
+    
+    // Flash() doesnt do anything yet because uhm..... why should it? I'm glad Flash is working at all, but the only two I need
+    // for a first step QOL are creature and combat flash. (and honestly, just creature is enough too for now)
+    
+    /// Flash the map display
+    public void Flash() => Flashed?.Invoke();
+    /// Flash visible from inside a room
+    public void FlashRoom() => FlashedRoom?.Invoke(this);
+    /// Flash specifically in a combat room
+    public void FlashCombat() => FlashedCombat?.Invoke(this);
+    /// Flash on specific creatures in a combat
+    public void FlashCreatures(IEnumerable<Creature> creatures) => FlashedCreatures?.Invoke(this, creatures);
+    public void FlashCreatures(Creature creature) => FlashedCreatures?.Invoke(this, [creature]);
+    
+    // Creatures subscribe during enterTree and unsubscribes during ExitTree
+    
     
     
     protected override void DeepCloneFields()
@@ -139,8 +172,6 @@ public abstract class AuraModel : AbstractModel
         base.DeepCloneFields();
         _dynamicVars = DynamicVars.Clone(this);
     }
-    
-    
     
     public AuraModel ToMutable()
     {
@@ -179,16 +210,14 @@ public abstract class AuraModel : AbstractModel
         return auraModel;
     }
 
-    protected void InvokeDisplayAmountChanged()
-    {
-        DisplayAmountChanged?.Invoke();
-    }
-
     protected override void AfterCloned()
     {
         base.AfterCloned();
         CanonicalInstance = ModelDb.GetById<AuraModel>(Id);
         DisplayAmountChanged = null;
+        Flashed = null;
+        FlashedCombat = null;
+        FlashedCreatures = null;
     }
 
     /// <summary>
