@@ -23,8 +23,7 @@ config/features=PackedStringArray("4.5", "C#", "Mobile")
 run/flush_stdout_on_print=true
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
-config/icon="res://images/icon_1024.png"
-config/windows_native_icon="res://images/icon.ico"
+config/icon="res://BossAuras/mod_image.png"
 
 [autoload]
 

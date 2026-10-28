@@ -1,5 +1,4 @@
 using BaseLib.Utils;
-using BossAuras.Constants;
 using BossAuras.Core.Handler;
 using BossAuras.Core.Models;
 using Godot;
@@ -23,7 +22,6 @@ public partial class Entry : Node
 #endif
         
         Harmony harmony = new(MOD_ID);
-
         harmony.PatchAll();
         AuraHandler.Register();
         AuraHandler.SubscribeForStateHooks();

@@ -25,6 +25,7 @@ namespace BossAuras.Core.Nodes;
 
 public partial class NMapAuraContainer : Control
 {
+    private const string SCENE_PATH = "res://BossAuras/scenes/ui/map_aura_container.tscn";
     // Map is persistent throughout the run! Once loaded it stays. So this should realistically only ever have one entry.
     private static readonly AddedNode<NMapScreen, NMapAuraContainer> MapAuraContainerNodes = new(mapScreen =>
     {
@@ -44,7 +45,7 @@ public partial class NMapAuraContainer : Control
     
     public static NMapAuraContainer Create()
     {
-        var nMapBossAuras = PreloadManager.Cache.GetScene("res://BossAuras/scenes/map_aura_container.tscn").Instantiate<NMapAuraContainer>();
+        var nMapBossAuras = PreloadManager.Cache.GetScene(SCENE_PATH).Instantiate<NMapAuraContainer>();
         return nMapBossAuras;
     }
 
@@ -104,8 +105,7 @@ public partial class NMapAuraContainer : Control
     private void AddAuraInternal(AuraModel aura)
     {
         Entry.Logger.Info($"Aura: {aura.Id.Entry}");
-        var roomIconPath = ImageHelper.GetRoomIconPath(MapPointType.Boss, RoomType.Boss, ModelDb.GetId<CeremonialBeastBoss>());
-        var nMapAura = NMapAura.Create(aura.Title, aura.DynamicDescription, roomIconPath!, aura);
+        var nMapAura = NMapAura.Create(aura);
         _nMapAuras.Add(nMapAura);
         _aurasContainer.AddChildSafely(nMapAura);
     }

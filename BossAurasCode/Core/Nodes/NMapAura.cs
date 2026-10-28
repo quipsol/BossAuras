@@ -12,6 +12,8 @@ namespace BossAuras.Core.Nodes;
 
 public partial class NMapAura : Control
 {
+    private const string SCENE_PATH = "res://BossAuras/scenes/map_aura_rework.tscn";
+    
     private CanvasItem _background = null!;
     private TextureRect _auraTexture = null!;
     private TextureRect _smallAuraTexture = null!; // optional
@@ -26,18 +28,15 @@ public partial class NMapAura : Control
     public AuraModel Model { get; private set; } = null!;
 
 
-    /// <summary>
     /// Creates an empty Node.
-    /// </summary>
-    /// <returns></returns>
     public static NMapAura Create()
     {
-        var nMapBossAura = PreloadManager.Cache.GetScene("res://BossAuras/scenes/map_aura_rework.tscn").Instantiate<NMapAura>();
+        var nMapBossAura = PreloadManager.Cache.GetScene(SCENE_PATH).Instantiate<NMapAura>();
         return nMapBossAura;
     }
-    public static NMapAura Create(LocString  title, LocString description, string iconPath, AuraModel aura)
+    public static NMapAura Create(AuraModel aura)
     {
-        var nMapBossAura = PreloadManager.Cache.GetScene("res://BossAuras/scenes/map_aura_rework.tscn").Instantiate<NMapAura>();
+        var nMapBossAura = PreloadManager.Cache.GetScene(SCENE_PATH).Instantiate<NMapAura>();
         nMapBossAura.Title = aura.Title.GetFormattedText();
         nMapBossAura.Description = aura.DynamicDescription;
         nMapBossAura.AuraIcon = aura.Icon;
