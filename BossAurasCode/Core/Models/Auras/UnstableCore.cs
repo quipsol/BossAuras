@@ -34,5 +34,8 @@ public class UnstableCore : BossAuraModel
         // Option 2 seems like the better option. Either way, I would want a Cmd or Helper class for the UI element (placement, etc.)
         // Placing it at the center makes sense, though it might fight against the UI of other mods
         // or even base game features (Knowledge Demons "choose a card" must be in front of this UI!)
+        
+        // Spawn container and store reference
+        // In some before turn end hook or something, check if a reference exists, and if it does do the damage and remove the reference.
     }
 }
