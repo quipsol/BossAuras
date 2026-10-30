@@ -9,10 +9,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace BossAuras.Core.DevConsole.ConsoleCommands;
 
-// TODO:
-// Boss Auras rely on the Boss value being set: Both to not crash (NRE, can be fixed on our end.), and to not stay indefinitely.
-// I might provide abstract aura with console command methods that they can use to fill out important things with some vague default value
-// so at least no error happen.
 
 public class AuraConsoleCmd : AbstractConsoleCmd
 {
@@ -52,7 +48,8 @@ public class AuraConsoleCmd : AbstractConsoleCmd
         }
 
         var mutableAura2 = canonicalAura.ToMutable();
-        mutableAura2.DebugOnlySetup(issuingPlayer.RunState);
+        mutableAura2.AddInternal(issuingPlayer.RunState);
+        mutableAura2.DebugOnlySetup();
         TaskHelper.RunSafely(AuraCmd.Add(mutableAura2));
         return new CmdResult(success: true, "Added Rura '" + text + "'");
     }

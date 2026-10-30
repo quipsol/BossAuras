@@ -34,7 +34,7 @@ public class AuraHandler
         GameHelper.GetNMapScreen()?.AuraContainer.Reload();
     }
 
-#endregion Accessor
+    #endregion Accessor
     
     
     
@@ -53,6 +53,7 @@ public class AuraHandler
         
         ExtendedSaveTypes.RegisterObjectSaveType<SerializableAura>(
                     ExtendedSaveTypes.PropertyFunc<SerializableAura, ModelId>(nameof(SerializableAura.Id)),
+                    ExtendedSaveTypes.PropertyFunc<SerializableAura, SerializableRng>(nameof(SerializableAura.Rng)),
                     ExtendedSaveTypes.PropertyFunc<SerializableAura, SavedProperties>(nameof(SerializableAura.Props))
                     );
         ExtendedSaveTypes.RegisterListSaveType<SerializableAura>();

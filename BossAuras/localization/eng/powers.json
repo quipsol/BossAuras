@@ -1,0 +1,6 @@
+﻿{
+
+  "BOSSAURAS-HUNTED_POWER.title": "Hunted",
+  "BOSSAURAS-HUNTED_POWER.description": "[gold]Flee[/gold] before it catches you!",
+  "BOSSAURAS-HUNTED_POWER.smartDescription": "{Amount:plural:At the end of your turn|In [blue]{}[/blue] turns}, you will be eaten and [red]die[/red]."
+}

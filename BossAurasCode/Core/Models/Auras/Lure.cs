@@ -18,6 +18,7 @@ public class Lure : BossAuraModel
     protected override IEnumerable<DynamicVar> CanonicalVars => [new CardsVar(1)];
     protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromCard<MinorBeckon>()];
     
+    
     public override async Task AfterSideTurnStart(CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
     {
         if (combatState.RoundNumber > 1) return;
@@ -25,6 +26,7 @@ public class Lure : BossAuraModel
         foreach (var player in combatState.Players)
         {
             var cardModel = combatState.CreateCard<MinorBeckon>(player);
+            // "CardPileCmd Add to combat and preview" exits!
             // generate in center of screen, then move to Discard
             // TODO: Replace with card preview
             await CardPileCmd.AddGeneratedCardToCombat(cardModel, PileType.Play, player);

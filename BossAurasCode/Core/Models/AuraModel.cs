@@ -4,10 +4,12 @@ using BossAuras.Core.Saves;
 using BossAuras.Core.Saves.Runs;
 using Godot;
 using MegaCrit.Sts2.Core.Entities.Creatures;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves.Runs;
 
@@ -19,6 +21,8 @@ namespace BossAuras.Core.Models;
 // Flash during open map
 // Flash during combat (general)
 // Flash during combat (on creature)
+
+// TODO: Go through all auras and replace nieche rng calls with the aura specific Rng.
 
 public abstract class AuraModel : AbstractModel
 {
@@ -74,8 +78,8 @@ public abstract class AuraModel : AbstractModel
         }
     }
     
-    
-    
+    // TODO: Provide aura specific RNG (see events)
+    public Rng Rng { get; private set; } = null!;
     /// A reference to the active RunState
     protected IRunState RunState
     {
@@ -189,6 +193,7 @@ public abstract class AuraModel : AbstractModel
         return new SerializableAura
         { 
                     Id = Id,
+                    Rng = Rng.ToSerializable(),
                     Props = SavedProperties.From(this),
         };
     }
@@ -199,6 +204,8 @@ public abstract class AuraModel : AbstractModel
     public static AuraModel FromSerializable(SerializableAura save)
     {
         var auraModel = AuraSaveUtil.AuraOrDeprecated(save.Id!).ToMutable();
+        // TODO: if check to guard against loading previous version without rng. can be removed soon.
+        if (save.Rng != null) auraModel.Rng = new Rng(save.Rng!);
         save.Props?.Fill(auraModel);
        
         auraModel.AfterDeserialized();
@@ -227,10 +234,12 @@ public abstract class AuraModel : AbstractModel
     public void AddInternal(IRunState runState)
     {
         RunState = runState;
+        // Multiple of the same aura have the same seed! Fine for now because you never have the same Aura multiple times.
+        Rng ??= new Rng(RunState.Rng.Seed + StringHelper.GetDeterministicHashCode(Id.Entry));
     }
 
     /// NEVER CALL THIS! <br/> Allows an Aura to set up fields in itself it requires to prevent crashing. Called from AuraConsoleCmd only!
-    public virtual void DebugOnlySetup(IRunState runState) { }
+    public virtual void DebugOnlySetup() { }
 
     #region Model specific Hooks
     

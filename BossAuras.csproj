@@ -22,7 +22,6 @@
 
         <Compile Remove="BossAuras/**"/>
         <EmbeddedResource Remove="BossAuras/**"/>
-        <Folder Include="BossAurasCode\Core\Models\Powers\" />
         <Folder Include="BossAurasCode\Telemetry\" />
         <None Include="BossAuras/**"/>
         <None Include="BossAurasCode/**"/> <!--Exclude="BossAurasCode/**/*.cs"-->

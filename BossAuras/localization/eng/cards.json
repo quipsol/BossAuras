@@ -1,4 +1,7 @@
 {
   "BOSSAURAS-MINOR_BECKON.title": "Minor Beckon",
-  "BOSSAURAS-MINOR_BECKON.description": "At the end of your turn, if this is in your [gold]Hand[/gold],\n lose {HpLoss} HP."
+  "BOSSAURAS-MINOR_BECKON.description": "At the end of your turn, if this is in your [gold]Hand[/gold],\n lose {HpLoss} HP.",
+
+  "BOSSAURAS-FLEE.title": "Flee",
+  "BOSSAURAS-FLEE.description": "Escape your hunter for {HuntedPower:diff()} more turn.\nIncrease this cards cost by {energyPrefix:energyIcons(1)}."
 }
