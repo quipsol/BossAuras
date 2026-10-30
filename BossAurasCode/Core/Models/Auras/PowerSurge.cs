@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models.Monsters;
 using MegaCrit.Sts2.Core.Models.Powers;
-using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Saves.Runs;
 
 namespace BossAuras.Core.Models.Auras;
@@ -56,26 +55,11 @@ public class PowerSurge : BossAuraModel
         
     }
 
-    // public override async Task AfterRoomEntered(AbstractRoom room)
-    // {
-    //     if (room is not CombatRoom combatRoom) return;
-    //     // Could check for the Boss property specifically, that way if you ever use it via command or have two waterfall giants
-    //     // it still gets called on one enemy
-    //     if (combatRoom.Encounter is WaterfallGiantBoss)
-    //     {
-    //         var waterfallGiants = combatRoom.CombatState.Enemies.Where(e => e.Monster is WaterfallGiant).ToList();
-    //         FlashCreatures(waterfallGiants);
-    //         await PowerCmd.Apply<SteamEruptionPower>(new ThrowingPlayerChoiceContext(), waterfallGiants, DynamicVars[EXTRA_STEAM].BaseValue, null, null);
-    //     }
-    // }
-
     public override Task AfterCardPlayed(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        if (cardPlay.Card.Type is CardType.Power)
-        {
-            FlashCreatures(cardPlay.Player.Creature);
-            ExtraSteam += DynamicVars[INCREASE].IntValue;
-        }
+        if (cardPlay.Card.Type is not CardType.Power) return Task.CompletedTask;
+        FlashCreatures(cardPlay.Player.Creature);
+        ExtraSteam += DynamicVars[INCREASE].IntValue;
         return Task.CompletedTask;
     }
 }
