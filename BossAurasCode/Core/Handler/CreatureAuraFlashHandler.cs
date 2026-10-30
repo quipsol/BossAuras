@@ -44,7 +44,6 @@ public class CreatureAuraFlashHandler
         {
             if (!GodotObject.IsInstanceValid(_nCreature)) return;
             if (!creatures.Contains(_nCreature.Entity)) return;
-            // TODO: NAuraCreatureFlashVfx
             var vfx = NAuraFlashCreatureVfx.Create(aura, _nCreature);
             if (vfx != null)
                 Callable.From(delegate { NCombatRoom.Instance?.CombatVfxContainer.AddChildSafely(vfx); }).CallDeferred();

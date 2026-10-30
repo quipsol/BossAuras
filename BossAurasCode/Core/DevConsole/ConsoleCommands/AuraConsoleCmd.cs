@@ -48,10 +48,14 @@ public class AuraConsoleCmd : AbstractConsoleCmd
         }
 
         var mutableAura2 = canonicalAura.ToMutable();
-        mutableAura2.AddInternal(issuingPlayer.RunState);
-        mutableAura2.DebugOnlySetup();
-        TaskHelper.RunSafely(AuraCmd.Add(mutableAura2));
+        TaskHelper.RunSafely(AddAura(mutableAura2));
         return new CmdResult(success: true, "Added Rura '" + text + "'");
+    }
+
+    private async Task AddAura(AuraModel aura)
+    {
+        await AuraCmd.Add(aura);
+        aura.DebugOnlySetup();
     }
     
     private static AuraModel? GetAuraById(string id)

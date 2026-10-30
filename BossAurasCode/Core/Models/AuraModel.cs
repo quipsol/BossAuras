@@ -77,8 +77,7 @@ public abstract class AuraModel : AbstractModel
             return field;
         }
     }
-    
-    // TODO: Provide aura specific RNG (see events)
+    /// Aura specific Rng
     public Rng Rng { get; private set; } = null!;
     /// A reference to the active RunState
     protected IRunState RunState

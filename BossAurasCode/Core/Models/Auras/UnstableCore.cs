@@ -26,12 +26,11 @@ public class UnstableCore : BossAuraModel
         if (side != CombatSide.Player) return;
         if (combatState.RoundNumber != DynamicVars[TURN].IntValue) return;
         Entry.Logger.Info("Initiate Unstable Core");
-        // TODO
+        // TODO:
         // Begin showing UI elements that informs the player that the effect is currently active (potentially with its own hover tips!).
         // Two options from here:
         // 1. The new element will take care of itself for exploding -> Needs to be a Model that gets hooks
         // 2. This model holds a reference to it, and still takes care of all the logic, the UI element is only for visuals.
-        
         // Option 2 seems like the better option. Either way, I would want a Cmd or Helper class for the UI element (placement, etc.)
         // Placing it at the center makes sense, though it might fight against the UI of other mods
         // or even base game features (Knowledge Demons "choose a card" must be in front of this UI!)

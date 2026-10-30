@@ -24,14 +24,6 @@ public class Lure : BossAuraModel
         if (combatState.RoundNumber > 1) return;
         if (side != CombatSide.Player) return;
         foreach (var player in combatState.Players)
-        {
-            var cardModel = combatState.CreateCard<MinorBeckon>(player);
-            // "CardPileCmd Add to combat and preview" exits!
-            // generate in center of screen, then move to Discard
-            // TODO: Replace with card preview
-            await CardPileCmd.AddGeneratedCardToCombat(cardModel, PileType.Play, player);
-            await CardPileCmd.Add(cardModel, PileType.Discard); 
-        }
-        
+            await CardPileCmd.AddToCombatAndPreview<MinorBeckon>(player.Creature, PileType.Discard, DynamicVars.Cards.IntValue, null);
     }
 }
