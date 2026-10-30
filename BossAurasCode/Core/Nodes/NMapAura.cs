@@ -5,14 +5,13 @@ using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Nodes.HoverTips;
-using MegaCrit.Sts2.Core.Nodes.Rooms;
 
 namespace BossAuras.Core.Nodes;
 
 
 public partial class NMapAura : Control
 {
-    private const string SCENE_PATH = "res://BossAuras/scenes/map_aura_rework.tscn";
+    private const string SCENE_PATH = "res://BossAuras/scenes/ui/map_aura_rework.tscn";
     
     private CanvasItem _background = null!;
     private TextureRect _auraTexture = null!;

@@ -22,5 +22,7 @@
   
   
   "BOSSAURAS-SUBSERVIENT.title": "Subservient",
-  "BOSSAURAS-SUBSERVIENT.description": "You are afflicted with [gold]Chains of Binding[/gold] [blue]{ChainsOfBindingPower}[/blue] during combat."
+  "BOSSAURAS-SUBSERVIENT.description": "You are afflicted with [gold]Chains of Binding[/gold] [blue]{ChainsOfBindingPower}[/blue] during combat.",
+  "BOSSAURAS-QUEEN.title": "QUEEN",
+  "BOSSAURAS-QUEEN.description": "Begin combat with one of the following:\n[blue]{PowerAmount}[/blue] [gold]Weakness[/gold]\n[blue]{PowerAmount}[/blue] [gold]Frail[/gold]\n[blue]{PowerAmount}[/blue] [gold]Vulnerable[/gold]\n"
 }

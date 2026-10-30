@@ -54,7 +54,7 @@ project/assembly_name="BossAuras"
 
 mounted_packs/addons=PackedStringArray("res://addons/spine", "res://addons/fmod", "res://addons/mega_text", "res://addons/dev_tools", "res://addons/megacontentcreator")
 mod_packer/packer="modot.default"
-pre_patches/enabled=PackedStringArray("modot.baselib.modeldbpreload", "modot.native.separateprojectmods")
+pre_patches/enabled=PackedStringArray("modot.baselib.modeldbpreload", "modot.native.separateprojectmods", "modot.native.releaseinfo")
 export/convert_text_resources_to_binary=false
 
 [editor_overrides]

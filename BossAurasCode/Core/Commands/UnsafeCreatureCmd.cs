@@ -27,7 +27,7 @@ public static class UnsafeCreatureCmd
         return creature;
     }
     
-    // This could be a reverse patch but I don't know how. Maybe I will NerdSnipe PikCube at some point.
+    // This could be a reverse patch, but I don't know how. Maybe I will NerdSnipe PikCube at some point.
     public static async Task Add(Creature creature)
     {
         var combatState = creature.CombatState;
