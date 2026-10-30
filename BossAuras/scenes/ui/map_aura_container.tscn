@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://dp15wofvksgs1"]
 
-[ext_resource type="Script" uid="uid://d2f4n072mjtsa" path="res://BossAurasCode/Core/Nodes/NMapAuraContainer.cs" id="1_h56ob"]
+[ext_resource type="Script" uid="uid://d2f4n072mjtsa" path="res://BossAurasCode/Core/Nodes/Auras/NMapAuraContainer.cs" id="1_h56ob"]
 [ext_resource type="Texture2D" uid="uid://d3vmiycr36blt" path="res://images/ui/hover_tip.png" id="1_wldb2"]
 [ext_resource type="FontVariation" uid="uid://ux4d708e7mk6" path="res://themes/kreon_bold_glyph_space_one.tres" id="2_ntbtt"]
-[ext_resource type="Script" uid="uid://dtfio45agppyj" path="res://addons/mega_text/MegaLabel.cs" id="3_h56ob"]
+[ext_resource type="Script" path="res://addons/mega_text/MegaLabel.cs" id="3_h56ob"]
 
 [node name="MapAuraContainer" type="MarginContainer"]
 offset_right = 200.0

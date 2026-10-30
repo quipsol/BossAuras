@@ -6,7 +6,7 @@ using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Nodes.HoverTips;
 
-namespace BossAuras.Core.Nodes;
+namespace BossAuras.Core.Nodes.Auras;
 
 
 public partial class NMapAura : Control

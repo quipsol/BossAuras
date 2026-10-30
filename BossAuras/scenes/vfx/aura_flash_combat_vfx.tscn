@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3nu0806g22pc"]
+
+[ext_resource type="Shader" uid="uid://1t5uxgjf63am" path="res://BossAuras/shaders/aura_flash_vfx.gdshader" id="1_aoko0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ikam8"]
+shader = ExtResource("1_aoko0")
+shader_parameter/strength = 3.0
+
+[node name="AuraFlashCombatVfx" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_ikam8")

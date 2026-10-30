@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://yo2q8seonco"]
 
-[ext_resource type="Script" uid="uid://b7lyy3ubsgk0b" path="res://BossAurasCode/Core/Nodes/NMapAura.cs" id="1_3qydp"]
+[ext_resource type="Script" uid="uid://b7lyy3ubsgk0b" path="res://BossAurasCode/Core/Nodes/Auras/NMapAura.cs" id="1_3qydp"]
 [ext_resource type="Texture2D" uid="uid://d3vmiycr36blt" path="res://images/ui/hover_tip.png" id="2_nh6ig"]
 [ext_resource type="Texture2D" uid="uid://bqliha840b7m5" path="res://images/ui/run_history/ceremonial_beast_boss_outline.png" id="3_ufns1"]
 [ext_resource type="FontVariation" uid="uid://ux4d708e7mk6" path="res://themes/kreon_bold_glyph_space_one.tres" id="4_05boj"]

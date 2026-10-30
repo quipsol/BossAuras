@@ -20,7 +20,7 @@ using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 
-namespace BossAuras.Core.Nodes;
+namespace BossAuras.Core.Nodes.Auras;
 
 
 public partial class NMapAuraContainer : Control

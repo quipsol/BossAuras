@@ -1,4 +1,5 @@
 ﻿using BossAuras.Core.Models;
+using BossAuras.Core.Nodes.Vfx;
 using Godot;
 using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Helpers;
@@ -6,11 +7,11 @@ using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.TestSupport;
 
-namespace BossAuras.Core.Nodes;
+namespace BossAuras.Core.Nodes.Vfx;
 
-public partial class NAuraFlashCreatureVfx : Node2D
+public partial class NAuraFlashCombatVfx : Node2D
 {
-    private const string SCENE_PATH = "res://BossAuras/scenes/vfx/aura_flash_creature_vfx.tscn";
+    private const string SCENE_PATH = "res://BossAuras/scenes/vfx/aura_flash_combat_vfx.tscn";
     
     private Sprite2D _sprite = null!;
     private AuraModel _aura = null!;
@@ -19,10 +20,10 @@ public partial class NAuraFlashCreatureVfx : Node2D
     public static IEnumerable<string> AssetPaths => [SCENE_PATH];
     
     
-    public static NAuraFlashCreatureVfx? Create(AuraModel aura, NCreature nCreature)
+    public static NAuraFlashCombatVfx? Create(AuraModel aura, NCreature nCreature)
     {
         if (TestMode.IsOn) return null;
-        var vfx = (NAuraFlashCreatureVfx)PreloadManager.Cache.GetScene(SCENE_PATH).Instantiate();
+        var vfx = (NAuraFlashCombatVfx)PreloadManager.Cache.GetScene(SCENE_PATH).Instantiate();
         vfx._aura = aura;
         vfx._nCreature = nCreature;
         return vfx;

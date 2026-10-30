@@ -2,14 +2,13 @@
 using BossAuras.Core.Extensions;
 using BossAuras.Core.Helper;
 using BossAuras.Core.Models;
-using BossAuras.Core.Nodes;
+using BossAuras.Core.Nodes.Vfx;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
-using MegaCrit.Sts2.Core.Nodes.Vfx;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace BossAuras.Core.Handler;

@@ -1,4 +1,4 @@
-﻿using BossAuras.Core.Nodes;
+﻿using BossAuras.Core.Nodes.Auras;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 
 namespace BossAuras.Core.Extensions;
