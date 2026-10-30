@@ -33,7 +33,7 @@ public class QuestProviderPatch
             var texture = ResourceLoader.Load<Texture2D>(path);
             var textureRect = PreloadManager.Cache.GetScene(SCENE_PATH).Instantiate<TextureRect>();
             textureRect.Texture = texture;
-            textureRect.PivotOffset = 0.5f * texture.GetSize();
+            textureRect.PivotOffset = 0.5f * textureRect.Size;
             ____iconContainer.AddChildSafely(textureRect);
             MapMarkerHandler.AddNodeToMapPoint(__instance, textureRect);
         }

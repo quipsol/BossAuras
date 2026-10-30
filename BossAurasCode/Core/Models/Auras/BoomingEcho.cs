@@ -31,7 +31,7 @@ public class BoomingEcho : BossAuraModel
             foreach (var creature in combatState.HittableEnemies)
                 await CreatureCmd.Stun(creature);
         }
-        
+        // I could turn this into a "get Ringing next turn" power and combine it with the above turn count to not double flash.
         if (combatState.RoundNumber == DynamicVars[TURN].BaseValue + 1)
         {
             FlashCombat();
