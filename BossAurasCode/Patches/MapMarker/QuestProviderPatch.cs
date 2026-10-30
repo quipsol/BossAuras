@@ -11,6 +11,7 @@ namespace BossAuras.Patches.MapMarker;
 [HarmonyPatch]
 public class QuestProviderPatch
 {
+    private const string SCENE_PATH = "res://BossAuras/scenes/ui/generic_map_marker.tscn";
     private const string REFRESH_MARKER_ICONS = "RefreshMarkedIconVisibility";
     private const string ANIM_HOVER = "AnimHover";
     private const string ANIM_UNHOVER = "AnimUnhover";
@@ -30,7 +31,7 @@ public class QuestProviderPatch
             questProviderCounter++;
             var path = questProvider.MarkerPath;
             var texture = ResourceLoader.Load<Texture2D>(path);
-            var textureRect = PreloadManager.Cache.GetScene("res://BossAuras/scenes/ui/generic_map_marker.tscn").Instantiate<TextureRect>();
+            var textureRect = PreloadManager.Cache.GetScene(SCENE_PATH).Instantiate<TextureRect>();
             textureRect.Texture = texture;
             textureRect.PivotOffset = 0.5f * texture.GetSize();
             ____iconContainer.AddChildSafely(textureRect);

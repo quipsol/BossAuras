@@ -25,6 +25,8 @@ public class Kinship : BossAuraModel, IQuestProvider
     private const string COMBATS = "Combats";
     private const string HP_PERCENTAGE = "HpPercentage";
     
+    public string MarkerPath => "res://BossAuras/images/map_markers/missing_marker.png";
+    
     public override List<EncounterModel> Bosses => [ModelDb.Encounter<TheKinBoss>()];
     
     
@@ -122,5 +124,5 @@ public class Kinship : BossAuraModel, IQuestProvider
         FlashCreatures(target);
     }
     
-    public string MarkerPath => "res://BossAuras/images/map_markers/missing_marker.png";
+
 }

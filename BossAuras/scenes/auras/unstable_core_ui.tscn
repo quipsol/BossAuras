@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://duwaj1psx5tl8"]
+
+[ext_resource type="Script" uid="uid://c3wfaa04qk08l" path="res://BossAurasCode/Core/Nodes/Auras/NUnstableCoreUi.cs" id="1_ijk80"]
+[ext_resource type="Texture2D" uid="uid://b3b4e4igil5oo" path="res://images/map/placeholder/waterfall_giant_boss_icon.png" id="1_lcmna"]
+
+[node name="UnstableCoreUi" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_ijk80")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_lcmna")
+
+[node name="IntentPosition" type="Node2D" parent="."]
+unique_name_in_owner = true

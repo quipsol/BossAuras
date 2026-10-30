@@ -1,5 +1,6 @@
 ﻿using BossAuras.Constants;
 using BossAuras.Core.Models.Auras;
+using BossAuras.Core.Nodes.Vfx;
 using BossAuras.Core.Saves;
 using BossAuras.Core.Saves.Runs;
 using Godot;
@@ -9,6 +10,7 @@ using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves.Runs;
@@ -160,8 +162,17 @@ public abstract class AuraModel : AbstractModel
     public void Flash() => Flashed?.Invoke();
     /// Flash visible from inside a room
     public void FlashRoom() => FlashedRoom?.Invoke(this);
+
     /// Flash specifically in a combat room
-    public void FlashCombat() => FlashedCombat?.Invoke(this);
+    public void FlashCombat()
+    {
+        // This is old code. I don't think I will need this as there is only ever one combat.
+        // No reason to fire an event in that case when I can just do it here directly.
+        FlashedCombat?.Invoke(this);
+        
+        NCombatRoom.Instance?.AddChildSafely(NAuraFlashCombatVfx.Create(this));
+    }
+    
     /// Flash on specific creatures in a combat
     public void FlashCreatures(IEnumerable<Creature> creatures) => FlashedCreatures?.Invoke(this, creatures);
     public void FlashCreatures(Creature creature) => FlashedCreatures?.Invoke(this, [creature]);

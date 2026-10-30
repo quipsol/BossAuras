@@ -14,7 +14,7 @@ using MegaCrit.Sts2.Core.Runs;
 namespace BossAuras.Core.Handler;
 
 [HarmonyPatch]
-public class CreatureAuraFlashHandler
+public class AuraFlashCreatureHandler
 {
     private class FlashContainer
     {

@@ -25,6 +25,7 @@ public class AggressiveSiphoning : BossAuraModel, IQuestProvider
     private const string COMBATS = "Combats";
     private const string TURN = "Turn";
     private const string SIPHON_COUNT = "SiphonCount";
+        public string MarkerPath => "res://BossAuras/images/map_markers/missing_marker.png";
     public override List<EncounterModel> Bosses => [ModelDb.Encounter<LagavulinMatriarchBoss>()];
     public override BossAuraEnd AuraEnd => BossAuraEnd.AfterBoss;
 
@@ -138,7 +139,7 @@ public class AggressiveSiphoning : BossAuraModel, IQuestProvider
             SiphonCount++;
         }
 
-        if (combatState.RoundNumber < 4)
+        if (combatState.RoundNumber < DynamicVars[TURN].IntValue)
         {
             FlashCreatures(combatState.Enemies);
             await PowerCmd.Apply<StrengthPower>(new ThrowingPlayerChoiceContext(), combatState.Enemies, -DynamicVars[nameof(StrengthPower)].BaseValue, null, null);
@@ -148,5 +149,5 @@ public class AggressiveSiphoning : BossAuraModel, IQuestProvider
     }
     
     
-    public string MarkerPath => "res://BossAuras/images/map_markers/missing_marker.png";
+
 }
