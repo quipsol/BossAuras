@@ -18,6 +18,7 @@ public class DoubleActOneAndTwoBosses
     [HarmonyPostfix]
     private static void Postfix(RunManager __instance)
     {
+        return;
         if (StateProperty == null) return;
         var state = (RunState?)StateProperty.GetValue(__instance);
         if (state == null) return;

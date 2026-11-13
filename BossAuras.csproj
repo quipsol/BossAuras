@@ -13,9 +13,10 @@
         <!-- Architecture mismatch warning -->
         <NoWarn>$(NoWarn);MSB3270</NoWarn>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
-        <PathMap>$(AppOutputBase)=.\</PathMap>
-    </PropertyGroup>
+    <!-- Works without too -->
+<!--    <PropertyGroup Condition="'$(Configuration)' != 'Debug'">-->
+<!--        <PathMap>$(AppOutputBase)=.\</PathMap>-->
+<!--    </PropertyGroup>-->
     
     <ItemGroup>
         <Content Include="project.godot"/>

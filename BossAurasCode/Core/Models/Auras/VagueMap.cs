@@ -2,7 +2,6 @@
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Encounters;
-using BossAuras.Core.Models;
 
 namespace BossAuras.Core.Models.Auras;
 

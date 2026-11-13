@@ -24,7 +24,7 @@ public class Tarred : BossAuraModel
     {
         if (room is CombatRoom combatRoom)
         {
-            foreach (var creature in combatRoom.CombatState.Creatures.Where(c => !c.IsPet))
+            foreach (var creature in combatRoom.CombatState.Creatures.Where(c => c is { IsPet: false, IsPlayer: false }))
             {
                 await PowerCmd.Apply<SlipperyPower>(new ThrowingPlayerChoiceContext(), creature, DynamicVars[nameof(SlipperyPower)].BaseValue, null, null);
             }

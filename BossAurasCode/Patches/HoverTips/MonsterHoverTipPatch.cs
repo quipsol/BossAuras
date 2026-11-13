@@ -63,6 +63,7 @@ public static class MonsterHoverTipPatch
     private const float TIP_GAP = 5f;
     
     [HarmonyPatch(typeof(NHoverTipSet), nameof(NHoverTipSet.SetAlignment))]
+    [HarmonyPatch(new Type[] {typeof(Control), typeof(HoverTipAlignment)})]
     [HarmonyPostfix]
     private static void AfterSetAlignment(NHoverTipSet __instance, Control node, HoverTipAlignment alignment)
     {

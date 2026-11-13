@@ -39,7 +39,7 @@ public static class SpawnHelper
             nCreature.GlobalPosition += new Vector2(moveBy, 0f);
         }
         // zoom out a bit to make it fit
-        // TODO: This does not guarantee everything is on the screen!
+        // TODO: This does not guarantee everything is on the screen! So far I never had issues but it very much lacks a check that guarantees it!
         NCombatRoom.Instance!.SceneContainer.Scale = Vector2.One * (combatState.Encounter.GetCameraScaling() - 0.1f);
     }
     

@@ -12,18 +12,20 @@ namespace BossAuras.Core.Models.Auras;
 
 public class SlowSiphon : BossAuraModel
 {
-    private const string TURN = "Turn";
+    private const string EARLY_TURN = "EarlyTurn";
+    private const string LATE_TURN = "LateTurn";
     public override List<EncounterModel> Bosses => [ModelDb.Encounter<LagavulinMatriarchBoss>()];
     public override BossAuraEnd AuraEnd => BossAuraEnd.BeforeBoss;
     
-    protected override IEnumerable<DynamicVar> CanonicalVars => [new (TURN, 4), new PowerVar<StrengthPower>(1), new PowerVar<DexterityPower>(1)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new (EARLY_TURN, 3), new (LATE_TURN, 5)
+                , new PowerVar<StrengthPower>(1), new PowerVar<DexterityPower>(1)];
     protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<StrengthPower>(), HoverTipFactory.FromPower<DexterityPower>()];
     public override async Task AfterSideTurnStart(CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
     {
         if (side != CombatSide.Player) return;
-        if (combatState.RoundNumber != DynamicVars[TURN].IntValue) return;
+        if (combatState.RoundNumber != DynamicVars[EARLY_TURN].IntValue && combatState.RoundNumber != DynamicVars[LATE_TURN].IntValue) return;
         FlashCombat();
-        var targets = combatState.Creatures.Where(c => c is { IsPet: false, IsAlive: true }).ToList();
+        var targets = combatState.Players.Select(p => p.Creature).Where(c => c is {IsAlive: true }).ToList();
         await PowerCmd.Apply<StrengthPower>(new ThrowingPlayerChoiceContext(), targets, -DynamicVars[nameof(StrengthPower)].BaseValue, null, null);
         await PowerCmd.Apply<DexterityPower>(new ThrowingPlayerChoiceContext(), targets, -DynamicVars[nameof(DexterityPower)].BaseValue, null, null);
         

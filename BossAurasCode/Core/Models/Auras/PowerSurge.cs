@@ -22,7 +22,7 @@ public class PowerSurge : BossAuraModel
     public override List<EncounterModel> Bosses => [ModelDb.Encounter<WaterfallGiantBoss>()];
     public override BossAuraEnd AuraEnd => BossAuraEnd.AfterBoss;
 
-    protected override IEnumerable<DynamicVar> CanonicalVars => [new (EXTRA_STEAM, 0), new(INCREASE, 1)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new (EXTRA_STEAM, 0), new(INCREASE, 2)];
     protected override IEnumerable<IHoverTip> ExtraHoverTips => [MonsterHoverTipFactory.FromMonster<WaterfallGiant>(), HoverTipFactory.FromPower<SteamEruptionPower>()];
 
     [SavedProperty]
